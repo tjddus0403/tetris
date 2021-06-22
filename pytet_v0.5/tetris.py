@@ -1,13 +1,14 @@
 from matrix import *
 from enum import Enum
 
-//Enum을 상속받는 클래스 
+//Enum을 상속받는 클래스, tetris 게임의 현재 상황 나타냄
 class TetrisState(Enum):
     Running = 0
     NewBlock = 1
     Finished = 2
 ### end of class TetrisState():
 
+//tetris 게임 클래스
 class Tetris():
     nBlockTypes = 0
     nBlockDegrees = 0
