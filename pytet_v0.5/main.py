@@ -1,16 +1,17 @@
-from tetris import *
+from tetris import * 
 from random import *
 
-import os
-import sys
-import tty
-import termios
-import signal
+import os //운영체제 제어 모듈
+import sys //파이썬 인터프리터 제어 모듈
+import tty //터미널 제어 모듈
+import termios //
+import signal //시그널 처리 모듈
 
-def clearScreen(numlines=100):
-	if os.name == 'posix':
-		os.system('clear')
-	elif os.name in ['nt', 'dos', 'ce']:
+def clearScreen(numlines=100): 
+	if os.name == 'posix': //os.name의 리턴 posix는 우분투 등의 리눅스 운영체제를 의미함 (cf. os.name의 리턴 nt는 윈도우 운영체제 의미)
+		os.system('clear') //os모듈의 system()함수는 python이 컴퓨터의 운영체제에게 명령어를 전달하기 위한 일종의 번역기능을 함. 
+		//즉, 여기서는 우분투 환경에서 clear실행하라는거임
+	elif os.name in ['nt', 'dos', 'ce']: 
 		os.system('CLS')
 	else:
 		print('\n' * numlines)
