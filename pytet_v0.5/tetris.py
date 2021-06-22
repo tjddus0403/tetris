@@ -1,6 +1,7 @@
 from matrix import *
 from enum import Enum
 
+//Enum을 상속받는 클래스 
 class TetrisState(Enum):
     Running = 0
     NewBlock = 1
