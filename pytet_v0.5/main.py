@@ -7,21 +7,22 @@ import tty //터미널 제어 모듈
 import termios //
 import signal //시그널 처리 모듈
 
+//화면 지우는 함수
 def clearScreen(numlines=100): 
 	if os.name == 'posix': //os.name의 리턴 posix는 우분투 등의 리눅스 운영체제를 의미함 (cf. os.name의 리턴 nt는 윈도우 운영체제 의미)
 		os.system('clear') //os모듈의 system()함수는 python이 컴퓨터의 운영체제에게 명령어를 전달하기 위한 일종의 번역기능을 함. 
 		//즉, 여기서는 우분투 환경에서 clear실행하라는거임
-	elif os.name in ['nt', 'dos', 'ce']: 
-		os.system('CLS')
+	elif os.name in ['nt', 'dos', 'ce']: //os.name의 리턴이 윈도우 운영체제 의미하면,
+		os.system('CLS') //윈도우 환경에서 CLS실행 (clear의미)
 	else:
-		print('\n' * numlines)
+		print('\n' * numlines) //둘다 아니면 공백 100줄
 	return
 
+//화면 출력 함수
 def printScreen(board):
-	clearScreen()
-	array = board.oScreen.get_array()
-
-	for y in range(board.oScreen.get_dy()-Tetris.iScreenDw):
+	clearScreen() //화면 지우기 
+	array = board.oScreen.get_array() //출력하려는 Tetris객체(board)의 oScreen 배열을 array에 저장
+	for y in range(board.oScreen.get_dy()-Tetris.iScreenDw): //출력하려는 Tetris객체(board)의 oScreen의 y좌표에서 
 		line = ''
 		for x in range(Tetris.iScreenDw, board.oScreen.get_dx()-Tetris.iScreenDw):
 			if array[y][x] == 0:
