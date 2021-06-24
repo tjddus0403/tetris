@@ -6,10 +6,10 @@ using namespace std;
 
 class Matrix {
 private:
-  int dy;
-  int dx;
-  int **array;
-  void alloc(int cy, int cx);
+  int dy; //행렬의 y축 길이
+  int dx; //행렬의 x축 길이
+  int **array; //2차 배열
+  void alloc(int cy, int cx); 
 public:
   int get_dy();
   int get_dx();
