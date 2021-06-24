@@ -230,12 +230,13 @@ if __name__ == "__main__":
 	global key_idx
 
 	is_log_mode = False
-	if len(sys.argv) == 2 and sys.argv[1] == 'log':
+	if len(sys.argv) == 2 and sys.argv[1] == 'log': #python3 cmain.py log 실행 시, keylog.py에 기록 남음
 		is_log_mode = True
 		log_start()
 
 	is_replay_mode = False
-	if len(sys.argv) == 2 and sys.argv[1] == 'replay':
+	if len(sys.argv) == 2 and sys.argv[1] == 'replay': #python3 cmain.py replay 실행 시, 
+		#keylog.py에 적힌 기록 보여줌
 		is_replay_mode = True
 		key_idx = 0
 		from keylog import *
