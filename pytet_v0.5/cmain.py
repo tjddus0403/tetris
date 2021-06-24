@@ -9,7 +9,7 @@ import termios
 import signal
 import imp
 
-def clearScreen(numlines=100):
+def clearScreen(numlines=100): #Tetris와 동일
 	if os.name == 'posix':
 		os.system('clear')
 	elif os.name in ['nt', 'dos', 'ce']:
@@ -18,7 +18,7 @@ def clearScreen(numlines=100):
 		print('\n' * numlines)
 	return
 
-def _printScreen(board):
+def _printScreen(board): #Tetris ver. printScreen
 	clearScreen()
 	array = board.oScreen.get_array()
 
@@ -36,7 +36,7 @@ def _printScreen(board):
 	print()
 	return
 
-def printScreen(board):
+def printScreen(board): #CTetris ver. printScreen
 	clearScreen()
 	array = board.oCScreen.get_array()
 
@@ -66,22 +66,22 @@ def printScreen(board):
 	print()
 	return
 
-def unregisterAlarm():
+def unregisterAlarm(): #Tetris와 동일
 	signal.alarm(0)
 	return
 
-def registerAlarm(handler, seconds):
+def registerAlarm(handler, seconds): #Tetris와 동일
 	unregisterAlarm()
 	signal.signal(signal.SIGALRM, handler)
 	signal.alarm(seconds)
 	return
 
-def timeout_handler(signum, frame): 
+def timeout_handler(signum, frame): #Tetris와 동일
 	#print("timeout!")
 	raise RuntimeError ### we have to raise error to wake up any blocking function
 	return
 
-def getChar():
+def getChar(): #Tetris와 동일
 	fd = sys.stdin.fileno()
 	old_settings = termios.tcgetattr(fd)
 	try:
@@ -92,7 +92,7 @@ def getChar():
 		termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 	return ch
  
-def readKey():
+def readKey(): #Tetris와 동일
 	c1 = getChar()
 	if ord(c1) != 0x1b: ### ESC character
 		return c1
@@ -102,7 +102,7 @@ def readKey():
 	c3 = getChar()
 	return chr(0x10 + ord(c3) - 65)
 
-def readKeyWithTimeOut():
+def readKeyWithTimeOut(): #Tetris와 동일
 	registerAlarm(timeout_handler, 1)
 	try:
 		key = readKey()
@@ -113,7 +113,7 @@ def readKeyWithTimeOut():
 
 	return
  
-def rotate(m_array):
+def rotate(m_array): #Tetris와 동일
     size = len(m_array)
     r_array = [[0] * size for _ in range(size)]
 
@@ -123,7 +123,7 @@ def rotate(m_array):
 
     return r_array
 
-def initSetOfBlockArrays():
+def initSetOfBlockArrays(): #Tetris와 동일
     global nBlocks
 
     arrayBlks = [ [ [ 0, 0, 1, 0 ],     # I shape
@@ -161,7 +161,7 @@ def initSetOfBlockArrays():
 
     return setOfBlockArrays
     
-def processKey(board, key):
+def processKey(board, key): #Tetris와 동일
 	global nBlocks 
 
 	state = board.accept(key)
