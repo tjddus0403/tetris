@@ -1,4 +1,4 @@
-class TextColor():
+class TextColor():  #각 색상의 ANSI 컬러 코드
     red    = "\033[31m"
     green  = "\033[32m"
     yellow = "\033[33m"
