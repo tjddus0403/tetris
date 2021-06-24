@@ -162,7 +162,7 @@ def processKey(board, key): #Tetris 게임에서 key작동 과정
 if __name__ == "__main__": #직접 실행된 모듈이라면, 
 #__name__=현재 모듈의 이름을 담고 있는 내장변수
 #직접 실행된 모듈의 경우 __main__이라는 값, 직접 실행되지 않은 import된 모듈은 모듈의 이름(파일명) 가지게 됨
-	setOfBlockArrays = initSetOfBlockArrays() #블록ㅏ됴 세트 생성
+	setOfBlockArrays = initSetOfBlockArrays() #블록 세트 생성
 
 	Tetris.init(setOfBlockArrays) #해당 블록 세트를 사용하는 Tetris 클래스 초기 설정 
 	board = Tetris(20, 15) #설정된 Tetris 클래스의 객체 board 생성->해당 설정을 가진 Tetris 게임 시작
