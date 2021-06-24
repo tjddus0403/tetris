@@ -183,7 +183,7 @@ if __name__ == "__main__": #직접 실행된 모듈이라면,
 			print('Game aborted...')
 			break
 
-		state = processKey(board, key) #
+		state = processKey(board, key) #processKey함수 통해 현재 게임 진행 상태 받아오기
 		if state == TetrisState.Finished: #현재 게임 진행 상태가 Finished면 반복문 탈출(게임 종료)
 			print('Game Over!!!')
 			break
