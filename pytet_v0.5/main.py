@@ -4,7 +4,7 @@ from random import *
 import os #운영체제 제어 모듈
 import sys #파이썬 인터프리터 제어 모듈
 import tty #터미널 제어 모듈
-import termios #
+import termios #저수준 터미널 제어 인터페이스
 import signal #시그널 처리 모듈
 
 #화면 지우는 함수
@@ -59,15 +59,19 @@ def timeout_handler(signum, frame):
 def getChar(): #문자열 받아오는 함수
 	fd = sys.stdin.fileno() #파일 디스크립터 0이 표준 입력(stdin)을 나타냄. 따라서 fd=0 
 	old_settings = termios.tcgetattr(fd) 
+	#termios.tcgetattr() : fd에 대한 tty attribute(속성)을 포함하는 리스트 반환
 	try: #예외 발생 가능성이 있는 코드
-		tty.setraw(sys.stdin.fileno())
-		ch = sys.stdin.read(1)
-		unregisterAlarm()
+		tty.setraw(sys.stdin.fileno()) #fd모드를 raw로 변경 
+		#when생략되었기에 기본값 termios.TCSAFLUSH로 termios.tcsetattr()로 전달됨
+		#따라서 모드가 raw로 변경된 fd에 대한 tty attribute를 attribute로 설정
+		ch = sys.stdin.read(1) #사용자로부터 문자열 입력받음(자동 엔터->sys.stdin.read()특성)
+		unregisterAlarm() #알람 초기화
 	finally: #예외 발생과 관련없이 무조건 실행할 코드
 		termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-	return ch 
+		#다시 사용자로부터 입력을 받을 원래 상태로 복귀..?느낌
+	return ch #사용자로부터 입력받은 문자 반환
  
-def readKey():
+def readKey(): #기능 미쳐버렸고~ 새로운 블록 생성 가능->잇츠 씨크릿
 	c1 = getChar()
 	if ord(c1) != 0x1b: ### ESC character
 		return c1
@@ -136,29 +140,29 @@ def initSetOfBlockArrays(): #블록세트 생성자(모든 상태의 블록을 �
 
     return setOfBlockArrays
     
-def processKey(board, key):
-	global nBlocks 
+def processKey(board, key): #Tetris 게임에서 key작동 과정
+	global nBlocks #블록 종류 갯수
 
-	state = board.accept(key)
-	printScreen(board)
+	state = board.accept(key) #key값 전해주고 이에 따른 Tetris 게임 진행상태 반환받기
+	printScreen(board) #Tetris 게임 화면 출력
           
-	if state != TetrisState.NewBlock:
+	if state != TetrisState.NewBlock: #새로운 블록이 생성되어야 할 상태가 아니라면 현재 상태 반환
 		return state
 
-	idxBlockType = randint(0, nBlocks-1)
-	key = '0' + str(idxBlockType)
-	state = board.accept(key)
-	printScreen(board)
+	idxBlockType = randint(0, nBlocks-1) #새로운 블록이 생성되어야 할 상태라면 
+	key = '0' + str(idxBlockType) #key값을 '0블록종류'로 설정
+	state = board.accept(key) #key값 전해주고 이에 따른 Tetris 게임 진행상태 반환받기
+	printScreen(board) #Tetris 게임 화면 출력
 
-	if state != TetrisState.Finished:
-		return state
+	if state != TetrisState.Finished: #이거 없어도 되는거....아닌감
+		return state #이 두 줄.....
 
 	return state
 
 if __name__ == "__main__": #직접 실행된 모듈이라면, 
 #__name__=현재 모듈의 이름을 담고 있는 내장변수
 #직접 실행된 모듈의 경우 __main__이라는 값, 직접 실행되지 않은 import된 모듈은 모듈의 이름(파일명) 가지게 됨
-	setOfBlockArrays = initSetOfBlockArrays() #블록 세트 생성
+	setOfBlockArrays = initSetOfBlockArrays() #블록ㅏ됴 세트 생성
 
 	Tetris.init(setOfBlockArrays) #해당 블록 세트를 사용하는 Tetris 클래스 초기 설정 
 	board = Tetris(20, 15) #설정된 Tetris 클래스의 객체 board 생성->해당 설정을 가진 Tetris 게임 시작
