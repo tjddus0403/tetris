@@ -36,24 +36,29 @@ def printScreen(board):
 	print()
 	return
 
-def unregisterAlarm():
-	signal.alarm(0)
-	return
+def unregisterAlarm(): #알람 초기화 함수(예약된 알람이 아무것도 없는 상태)
+	signal.alarm(0) 
+	#alarm은 SIGALRM신호가 초 단위로 호출 프로세스에 전달되도록 정렬함
+	#초가 0인 경우, 알람 취소됨(알람이 없는거나 마찬가지)
+	#예약된 알람이 없는 경우 0반환/ alarm은 이전에 예약된 알람이 전달될 때까지 남은 시간(초) 반환
+	return 
 
-def registerAlarm(handler, seconds):# seconds=몇 초 마다 key값 바꿀건지, #handler
-	unregisterAlarm()
-	signal.signal(signal.SIGALRM, handler)
-	signal.alarm(seconds)
+def registerAlarm(handler, seconds):#알람 예약 함수(몇 초마다 handler의 강제오류 발생시킬건지..?)
+	unregisterAlarm() #예약된 알람이 없는 상태 설정
+	signal.signal(signal.SIGALRM, handler) #SIGALRM 처리기를 함수handler로 설정
+	signal.alarm(seconds) #seconds초 alarm 예약->여기선 1초->반환값 1
+	#1초 지나면 handler에 있는 런타임오류 강제발생 시켜주는건가...?이게 맞나...?
 	return
 
 def timeout_handler(signum, frame): 
 	#print("timeout!")
 	raise RuntimeError ### we have to raise error to wake up any blocking function
+	#오류 강제 발생
 	return
 
 def getChar(): #문자열 받아오는 함수
-	fd = sys.stdin.fileno()
-	old_settings = termios.tcgetattr(fd)
+	fd = sys.stdin.fileno() #파일 디스크립터 0이 표준 입력(stdin)을 나타냄. 따라서 fd=0 
+	old_settings = termios.tcgetattr(fd) 
 	try: #예외 발생 가능성이 있는 코드
 		tty.setraw(sys.stdin.fileno())
 		ch = sys.stdin.read(1)
@@ -73,12 +78,12 @@ def readKey():
 	return chr(0x10 + ord(c3) - 65)
 
 def readKeyWithTimeOut(): #시간 흐름에 따른 key값 바꿔주는 함수
-	registerAlarm(timeout_handler, 1) 
-	try:
-		key = readKey()
-		unregisterAlarm()
-		return key
-	except RuntimeError as e:
+	registerAlarm(timeout_handler, 1) #1초마다 런타임 에러 발생
+	try: #에러발생 가능한 코드
+		key = readKey() 
+		unregisterAlarm() #알람 초기화
+		return key #키 값 반환
+	except RuntimeError as e: #런타임 에러에 대한 예외 설정
 		pass # print('readkey() interrupted!')
 
 	return
@@ -179,7 +184,7 @@ if __name__ == "__main__": #직접 실행된 모듈이라면,
 			print('Game Over!!!')
 			break
     
-	unregisterAlarm()
+	unregisterAlarm() #알람 초기화 후 종료
 	print('Program terminated...')
 
 ### end of main.py
