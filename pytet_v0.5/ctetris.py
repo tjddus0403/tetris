@@ -5,25 +5,26 @@ class CTetris(Tetris):
 	setOfCBlockObjects = 0
 
 	@classmethod
-	def init(cls, setOfBlockArrays):
+	def init(cls, setOfBlockArrays): 
 		Tetris.init(setOfBlockArrays)
 		CTetris.setOfCBlockObjects = [[0]* Tetris.nBlockDegrees for _ in range(Tetris.nBlockTypes)]
 
 		for i in range(Tetris.nBlockTypes):
 			for j in range(Tetris.nBlockDegrees):
 				obj = Matrix(setOfBlockArrays[i][j])
-				obj.mulc(i+1)
-				CTetris.setOfCBlockObjects[i][j] = obj
+				obj.mulc(i+1) #블록별로 색상을 다르게 하기 위함
+				CTetris.setOfCBlockObjects[i][j] = obj 
+				#블록별로 색상 다르게 하여 CTetris 클래스 초기설정(블록 세트 설정)
 		return
 	
-	def __init__(self, cy, cx):
-		Tetris.__init__(self, cy, cx)
-		arrayScreen = self.createArrayScreen()
-		self.iCScreen = Matrix(arrayScreen)
-		self.oCScreen = Matrix(self.iCScreen)
+	def __init__(self, cy, cx): #CTetris 생성자
+		Tetris.__init__(self, cy, cx) #Tetris상속받아 객체 생성
+		arrayScreen = self.createArrayScreen() #CTetris의 arrayScreen=Tetris 상속받아 만든 ArrayScreen
+		self.iCScreen = Matrix(arrayScreen) #arrayScreen을 Matrix type으로 받아 iCScreen설정
+		self.oCScreen = Matrix(self.iCScreen) #iCScreen을 Matrix type으로 받아 oCScreen설정
 		return
 
-	def accept(self, key):
+	def accept(self, key): #
 		if key >= '0' and key <= '6':
 			if self.justStarted == False:
 				self.deleteFullLines()
