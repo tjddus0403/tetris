@@ -46,25 +46,27 @@ TetrisState CTetris::accept(char key){
     return state;
 }
 void CTetris::deleteFullLines(){
-    for(int y=0;y<iScreenDy;y++)
+    for(int y=0;y<iScreenDy;y++) //반복문통해 iScreen의 모든 줄을 돌며 채워진 줄이 있는지 확인
     {
         iScreen=Matrix(oScreen);
         iCScreen=Matrix(oCScreen);
         int top=y;
         int left=iScreenDw;
         bool isDelete=false;
-        Matrix tempBlk=iScreen.clip(top,left,top+1,left+iScreenDx);
-        if(tempBlk.sum()==iScreenDx)
+        Matrix tempBlk=iScreen.clip(top,left,top+1,left+iScreenDx); //한줄씩 tempBlk으로 잘라서 확인
+        if(tempBlk.sum()==iScreenDx) //한줄에 있는 수들의 합이 iScreenDx와 같으면 채워진거임
             isDelete=true;
-        if(isDelete==true)
+        if(isDelete==true) //해당 줄이 채워졌으면
         {
-            Matrix CtempBlk;
-            tempBlk=iScreen.clip(0,left,top,left+iScreenDx);
+            Matrix CtempBlk; 
+            tempBlk=iScreen.clip(0,left,top,left+iScreenDx); 
+            //iScreen의 가장 위부터 해당 줄 바로 위까지 잘라서 tempBlk에 저장
             CtempBlk=iCScreen.clip(0,left,top,left+iScreenDx);
+            //iCSreen의 가장 위부터 해당 줄 바로 위까지 잘라서 CtempBlk에 저장
             oScreen=Matrix(iScreen);
             oCScreen=Matrix(iCScreen);
-            oScreen.paste(&tempBlk,1,left);
-            oCScreen.paste(&CtempBlk,1,left);
+            oScreen.paste(&tempBlk,1,left); //oScreen의 두번째 줄이 top이 되도록 tempBlk 붙여넣기
+            oCScreen.paste(&CtempBlk,1,left); //oCScreen의 두번째 줄이 top이 되도록 CtempBlk 붙여넣기
         } 
     }
     return;
