@@ -36,30 +36,30 @@ def _printScreen(board): #Tetris ver. printScreen
 	print()
 	return
 
-def printScreen(board): #CTetris ver. printScreen
-	clearScreen()
-	array = board.oCScreen.get_array()
-
+def printScreen(board): #CTetris ver. printScreen  #화면 출력 함수
+	clearScreen() #화면 지우기
+	array = board.oCScreen.get_array() #출력하려는 CTetris객체(board)의 oScreen배열을 array에 저장
+	#Tetris ver. printScreen과 마찬가지로 반복문을 통해 원하는 범위의 화면 출력
 	for y in range(board.oScreen.get_dy()-Tetris.iScreenDw):
 		line = ''
 		for x in range(Tetris.iScreenDw, board.oScreen.get_dx()-Tetris.iScreenDw):
-			if array[y][x] == 0:
-				line += TextColor().white+'□'
-			elif array[y][x] == 1:
+			if array[y][x] == 0: #해당 위치 값이 0이면 흰색 빈칸 출력
+				line += TextColor().white+'□' 
+			elif array[y][x] == 1:#해당 위치 값이 1이면 빨간색 칸 출력
 				line += TextColor().red+'■'
-			elif array[y][x] == 2:
+			elif array[y][x] == 2:#해당 위치 값이 2이면 초록색 칸 출력
 				line += TextColor().green+'■'
-			elif array[y][x] == 3:
+			elif array[y][x] == 3:#해당 위치 값이 3이면 노란색 칸 출력
 				line += TextColor().yellow+'■'
-			elif array[y][x] == 4:
+			elif array[y][x] == 4:#해당 위치 값이 4이면 파란색 칸 출력
 				line += TextColor().blue+'■'
-			elif array[y][x] == 5:
+			elif array[y][x] == 5:#해당 위치 값이 5이면 보라색 칸 출력
 				line += TextColor().purple +'■'
-			elif array[y][x] == 6:
+			elif array[y][x] == 6:#해당 위치 값이 6이면 cyan색 칸 출력
 				line += TextColor().cyan+'■'
-			elif array[y][x] == 7:
+			elif array[y][x] == 7:#해당 위치 값이 7이면 핑크색 칸 출력
 				line += TextColor().pink+'■'
-			else:
+			else: #모두 아니면 'XX' 출력
 				line += 'XX'
 		print(line)
 
@@ -160,52 +160,56 @@ def initSetOfBlockArrays(): #Tetris와 동일
             setOfBlockArrays[idxBlockType][idxBlockDegree] = temp_array
 
     return setOfBlockArrays
-    
-def processKey(board, key): #Tetris와 동일
-	global nBlocks 
+#주어진 key값을 작동시켜 CTetris 게임 현재 진행 상태 반환하는 함수
+def processKey(board, key): 
+	global nBlocks #블록 종류 갯수
 
-	state = board.accept(key)
-	printScreen(board)
+	state = board.accept(key) 
+	#key값 전해주고 이에 따른 CTetris 게임 진행상태 반환받기
+	printScreen(board)#CTetris 게임 화면 출력
           
 	if state != TetrisState.NewBlock:
+	#새로운 블록이 생성되어야 할 상태 아니면 현재 상태 반환
 		return state
 
 	key = getKey(False) ### log or replay
-	#새로운 블록 생성(사용자로부터 key값 받을 필요 없음)
-	state = board.accept(key)
-	printScreen(board)
+	#새 블록 생성되어야 할 상태면, getKey함수 이용해 새 블록에 해당되는 key값 받기
+	state = board.accept(key) #key값 전해주고 이에 따른 CTetris 게임 진행상태 받기
+	printScreen(board) #CTetris 게임 화면 출력
 
 	if state != TetrisState.Finished:
 		return state
+	return state#현재 CTetris 게임 진행상태 반환
 
-	return state
+def getKey(is_keystroke_needed): #현재 모드와 상황에 따른 key값 반환하는 함수
+	global is_log_mode #전역변수 is_log_mode 사용(현재 모드가 log모드인지)
+	global is_replay_mode #전역변수 is_replay_mode 사용(현재 모드가 replay모드인지)
 
-def getKey(is_keystroke_needed):
-	global is_log_mode
-	global is_replay_mode
-
-	if is_replay_mode: #만약 replay모드가 켜져있으면 get_key_from_log()실행
+	if is_replay_mode: #만약 replay모드가 켜져있으면 get_key_from_log()실행해 key값 받기
 		key = get_key_from_log()
+	#replay모드가 아닌 경우	
 	elif is_keystroke_needed: #만약 사용자로부터 키값을 받는 것을 필요로 한다면
 		key = readKeyWithTimeOut() #사용자로부터 키 값 받기
-		if not key: #key값이 0이면 아래로 한 칸
+		if not key: #받은 key값이 없으면 아래로 한 칸('s')
 			key = 's'
-	else: #둘다 아니면(새 블록 생성)
+	else: #replay모드도 아닌데 사용자로부터 키 값을 받을 필요없다면(새 블록 생성)
 		idxBlockType = randint(0, nBlocks-1) #현재 블록의 종류는 0~6까지의 랜덤 정수로 결정
 		key = '0' + str(idxBlockType) #key값을 '0현재 블록 종류'로 설정
  
-	if is_log_mode: #만약 log모드가 켜져있으면 log_key(key)함수 실행
+	if is_log_mode: #만약 log모드가 켜져있으면 log_key(key)함수 실행(keylog.py파일에 기록)
 		log_key(key)
 	return key #설정된 key값 반환
 
-def get_key_from_log():
-	global keys
-	global key_idx
+###################replay용 함수##########################
+def get_key_from_log(): 
+#replay모드에서 사용하는 함수(keylog.py에 기록되어있는 keys 리스트로부터 key값 하나씩 가져오기) 
+	global keys #전역변수 keys(key값들이 기록된 리스트) 사용
+	global key_idx #전역변수 key_idx 사용
 
-	key = keys[key_idx] #key=keys리스트에 있는 가장 마지막 원소로 설정
-	key_idx += 1 #
+	key = keys[key_idx] #key=keys리스트에 있는 원소로 설정
+	key_idx += 1 
 	return key
-
+####################log용 함수#############################
 def log_start(): #log시작 함수/key값 기록할 파일을 쓰기모드로 열어서 초기화
 	fp = open('keylog.py', 'w')
 	fp.write('keys = [\n')

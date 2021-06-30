@@ -22,14 +22,16 @@ def clearScreen(numlines=100):
 def printScreen(board):
 	clearScreen() #화면 지우기 
 	array = board.oScreen.get_array() #출력하려는 Tetris객체(board)의 oScreen 배열을 array에 저장
-	for y in range(board.oScreen.get_dy()-Tetris.iScreenDw): #출력하려는 Tetris객체(board)의 oScreen의 y좌표에서 
+	for y in range(board.oScreen.get_dy()-Tetris.iScreenDw): 
+	#출력하려는 화면 y축 범위 : 객체(board)의 oScreen의 dy에서 블록의 최대 폭인 iScreenDw를 뺀 범위 
 		line = ''
 		for x in range(Tetris.iScreenDw, board.oScreen.get_dx()-Tetris.iScreenDw):
-			if array[y][x] == 0:
+		#출력하려는 화면 x축 범위 : 객체(board)의 oScreen의 dx에서 블록의 최대 폭인 iScreenDw를 뺀 범위
+			if array[y][x] == 0: #만약 해당 위치 값이 0이면 빈 칸 출력
 				line += '□'
-			elif array[y][x] == 1:
+			elif array[y][x] == 1: #만약 해당 위치 값이 1이면 칠해진 칸 출력
 				line += '■'
-			else:
+			else: #모두 아니면 'XX' 출력
 				line += 'XX'
 		print(line)
 
@@ -43,11 +45,11 @@ def unregisterAlarm(): #알람 초기화 함수(예약된 알람이 아무것도
 	#예약된 알람이 없는 경우 0반환/ alarm은 이전에 예약된 알람이 전달될 때까지 남은 시간(초) 반환
 	return 
 
-def registerAlarm(handler, seconds):#알람 예약 함수(몇 초마다 handler의 강제오류 발생시킬건지..?)
+def registerAlarm(handler, seconds):#알람 예약 함수
 	unregisterAlarm() #예약된 알람이 없는 상태 설정
 	signal.signal(signal.SIGALRM, handler) #SIGALRM 처리기를 함수handler로 설정
 	signal.alarm(seconds) #seconds초 alarm 예약->여기선 1초->반환값 1
-	#1초 지나면 handler에 있는 런타임오류 강제발생 시켜주는건가...?이게 맞나...?
+	#1초 지나면 handler에 있는 런타임오류 강제발생 시켜줌
 	return
 
 def timeout_handler(signum, frame): 
@@ -56,7 +58,7 @@ def timeout_handler(signum, frame):
 	#오류 강제 발생
 	return
 
-def getChar(): #문자열 받아오는 함수
+def getChar(): #문자 받아오는 함수
 	fd = sys.stdin.fileno() #파일 디스크립터 0이 표준 입력(stdin)을 나타냄. 따라서 fd=0 
 	old_settings = termios.tcgetattr(fd) 
 	#termios.tcgetattr() : fd에 대한 tty attribute(속성)을 포함하는 리스트 반환
@@ -68,23 +70,23 @@ def getChar(): #문자열 받아오는 함수
 		unregisterAlarm() #알람 초기화
 	finally: #예외 발생과 관련없이 무조건 실행할 코드
 		termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-		#다시 사용자로부터 입력을 받을 원래 상태로 복귀..?느낌
+		#다시 사용자로부터 입력을 받을 원래 상태로 복귀
 	return ch #사용자로부터 입력받은 문자 반환
  
-def readKey(): #기능 미쳐버렸고~ 새로운 블록 생성 가능->잇츠 씨크릿
-	c1 = getChar()
-	if ord(c1) != 0x1b: ### ESC character
+def readKey(): #getChar() 이용해 key읽고 반환하는 함수
+	c1 = getChar() #첫번째 문자를 사용자로부터 받음
+	if ord(c1) != 0x1b: ### ESC character #첫번째 문자가 'ESC'가 아니면 해당 문자 반환
+		return c1 
+	c2 = getChar() #두번째 문자를 사용자로부터 받음
+	if ord(c2) != 0x5b: ### '[' character #두번째 문자가 '['가 아니면 첫번째 문자 반환
 		return c1
-	c2 = getChar()
-	if ord(c2) != 0x5b: ### '[' character
-		return c1
-	c3 = getChar()
-	return chr(0x10 + ord(c3) - 65)
+	c3 = getChar() #세번째 문자를 사용자로부터 받음
+	return chr(0x10 + ord(c3) - 65) #아스키코드로 주어진 수식을 계산해 나오는 문자를 반환
 
 def readKeyWithTimeOut(): #시간 흐름에 따른 key값 바꿔주는 함수
 	registerAlarm(timeout_handler, 1) #1초마다 런타임 에러 발생
 	try: #에러발생 가능한 코드
-		key = readKey() 
+		key = readKey() #key 읽어오기
 		unregisterAlarm() #알람 초기화
 		return key #키 값 반환
 	except RuntimeError as e: #런타임 에러에 대한 예외 설정
@@ -94,15 +96,15 @@ def readKeyWithTimeOut(): #시간 흐름에 따른 key값 바꿔주는 함수
  
 def rotate(m_array): #블록 회전 함수
     size = len(m_array)
-    r_array = [[0] * size for _ in range(size)]
+    r_array = [[0] * size for _ in range(size)] #회전된 블록을 담을 r_array생성
 
-    for y in range(size):
+    for y in range(size): #반복문 통해 r_array에 회전된 블록 담기
         for x in range(size):
             r_array[x][size-1-y] = m_array[y][x]
 
-    return r_array
+    return r_array #회전된 블록 반환
 
-def initSetOfBlockArrays(): #블록세트 생성자(모든 상태의 블록을 담고 있음(블록 한 종류당 회전에 따라 4가지 상태 존재))
+def initSetOfBlockArrays(): #블록세트 생성 후 반환하는 함수(모든 상태의 블록을 담고 있음(블록 한 종류당 회전에 따라 4가지 상태 존재))
     global nBlocks
 
     arrayBlks = [ [ [ 0, 0, 1, 0 ],     # I shape
@@ -127,20 +129,18 @@ def initSetOfBlockArrays(): #블록세트 생성자(모든 상태의 블록을 �
                     [0, 1, 1],          
                     [0, 0, 0] ]         
                 ]
-
     nBlocks = len(arrayBlks) #블록 종류 수
-    setOfBlockArrays = [[0] * 4 for _ in range(nBlocks)] 
-
-    for idxBlockType in range(nBlocks):
+    setOfBlockArrays = [[0] * 4 for _ in range(nBlocks)] #한 종류당 4가지 상태가 들어갈 수 있는 크기의 setOfBlockArrays 배열 생성
+		
+    for idxBlockType in range(nBlocks): #반복문을 통해 setOfBlockArrays 배열에 모든 종류, 상태의 블록 넣기
         temp_array = arrayBlks[idxBlockType]
         setOfBlockArrays[idxBlockType][0] = temp_array
         for idxBlockDegree in range(1,4):
             temp_array = rotate(temp_array)
             setOfBlockArrays[idxBlockType][idxBlockDegree] = temp_array
-
-    return setOfBlockArrays
+    return setOfBlockArrays #생성된 setOfBlockArrays 배열 반환
     
-def processKey(board, key): #Tetris 게임에서 key작동 과정
+def processKey(board, key): #주어진 key값을 작동시켜 Tetris 게임 현재 진행 상태 반환하는 함수
 	global nBlocks #블록 종류 갯수
 
 	state = board.accept(key) #key값 전해주고 이에 따른 Tetris 게임 진행상태 반환받기
@@ -154,10 +154,9 @@ def processKey(board, key): #Tetris 게임에서 key작동 과정
 	state = board.accept(key) #key값 전해주고 이에 따른 Tetris 게임 진행상태 반환받기
 	printScreen(board) #Tetris 게임 화면 출력
 
-	if state != TetrisState.Finished: #이거 없어도 되는거....아닌감
-		return state #이 두 줄.....
-
-	return state
+	if state != TetrisState.Finished: 
+		return state 
+	return state #현재 Tetris 게임 진행상태 반환
 
 if __name__ == "__main__": #직접 실행된 모듈이라면, 
 #__name__=현재 모듈의 이름을 담고 있는 내장변수
