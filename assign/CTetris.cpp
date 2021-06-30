@@ -4,7 +4,6 @@ CTetris::~CTetris(){
     for(int i=0;i<nBlockTypes;i++)
         delete [] setOfCBlockObjects[i];
     delete [] setOfCBlockObjects;
-    cout<<"Ctetris del\n";
 }
 void CTetris::init(int *setOfBlockArrays[], int MAX_BLK_TYPES, int MAX_BLK_DEGREES){
     Tetris::init(setOfBlockArrays,MAX_BLK_TYPES,MAX_BLK_DEGREES);
