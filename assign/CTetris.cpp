@@ -47,7 +47,6 @@ TetrisState CTetris::accept(char key){
     return state;
 }
 void CTetris::deleteFullLines(){
-    //Tetris::deleteFullLines();
     for(int y=0;y<iScreenDy;y++)
     {
         iScreen=Matrix(oScreen);
