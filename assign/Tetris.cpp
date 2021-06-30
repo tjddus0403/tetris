@@ -6,6 +6,7 @@
 Tetris::Tetris(){
     iScreenDx=0;
     iScreenDy=0;
+    arrayScreen=new int[(iScreenDx+iScreenDw*2)*(iScreenDy+iScreenDw)];
     createArrayScreen(arrayScreen);
     iScreen=Matrix(arrayScreen,iScreenDy+iScreenDw,iScreenDx+2*iScreenDw);
     oScreen=Matrix(iScreen);
@@ -20,7 +21,6 @@ Tetris::Tetris(int Dy, int Dx){
     iScreen=Matrix(arrayScreen,iScreenDy+iScreenDw,iScreenDx+2*iScreenDw);
     oScreen=Matrix(iScreen);
     idxBlockDegree=0;
-    //idxBlockType=0;
     justStarted=true;
 }
 Tetris::~Tetris(){
@@ -28,7 +28,6 @@ Tetris::~Tetris(){
         delete [] setOfBlockObjects[i];
     delete [] setOfBlockObjects;
     delete [] arrayScreen;
-    cout<<"Tetris del\n";
 }
 
 void Tetris::init(int *setOfBlockArrays[], int MAX_BLK_TYPES, int MAX_BLK_DEGREES){
@@ -95,7 +94,6 @@ TetrisState Tetris::accept(char key){
     }
     else if(key=='q')
         std::cout<<"quit\n";//do not anything
-        //state=Finished;
     else if(key=='a')
         left-=1;
     else if(key=='d')
