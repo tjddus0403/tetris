@@ -4,26 +4,11 @@
 enum TetrisState { Running, NewBlock, Finished };
 
 class Tetris {
-    /*private:
+    protected:
         static int nBlockTypes;
         static int nBlockDegrees;
         static Matrix** setOfBlockObjects;
         Matrix iScreen;
-        int iScreenDx;
-        int iScreenDy;
-        int* arrayScreen;
-        bool justStarted;
-        int idxBlockDegree;
-        TetrisState state;
-        int top;
-        int left;
-        Matrix currBlk;*/
-    public:
-        static int nBlockTypes;
-        static int nBlockDegrees;
-        static Matrix** setOfBlockObjects;
-        Matrix iScreen;
-        Matrix oScreen; 
         int iScreenDx;
         int iScreenDy;
         int* arrayScreen;
@@ -33,7 +18,8 @@ class Tetris {
         int top;
         int left;
         Matrix currBlk;
-        ////////////////////////////////
+    public:
+        Matrix oScreen;
         int idxBlockType;
         static int iScreenDw;
         Tetris();
