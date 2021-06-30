@@ -17,6 +17,7 @@
 #include "ttymodes.c"
 #include "CTetris.cpp"
 #include<fstream>
+#include"keylog.cpp"
 using namespace std;
 #define color_normal "\x1b[0m"
 #define color_red "\x1b[31m"
@@ -169,35 +170,40 @@ int *setOfBlockArrays[] = {
 
 bool is_log_mode;
 bool is_replay_mode;
-int* keys;
+//char* keys;
 int key_idx;
 
 char get_key_from_log(){
   char key;
   key=keys[key_idx];
   key_idx+=1;
+  cout<<key;
   return key;
 }
 void log_start(){
   ofstream writefile;
-  writefile.open("keylog.txt");
+  writefile.open("keylog.cpp");
   if(writefile.is_open())    //파일이 열렸는지 확인
-    writefile<<"keys=[\n";    //파일에 문자열 쓰기
+    writefile<<"char keys[]={";    //파일에 문자열 쓰기
   writefile.close();
 }
 void log_end(){
   ofstream writefile;
-  writefile.open("keylog.txt",ios::app);
+  writefile.open("keylog.cpp",ios::app);
   if(writefile.is_open())
-    writefile<<"]\n";
+    writefile<<"};\n";
   writefile.close();
 }
 void log_key(char key){
   ofstream writefile;
-  writefile.open("keylog.txt",ios::app);
+  writefile.open("keylog.cpp",ios::app);
   if(writefile.is_open())
+  {
+    writefile<<"'";
     writefile<<key;
-    writefile<<"\n";
+    writefile<<"'";
+    writefile<<",";
+  }
   writefile.close();
 }
 char getKey(bool is_keystroke_needed,CTetris *board){
