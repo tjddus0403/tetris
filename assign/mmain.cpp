@@ -148,7 +148,6 @@ void drawScreen(CTetris *board)
   int dw = board->iScreenDw;
   int **array = board->oCScreen.get_array();
   system("clear");
-  cout<<"dy : "<<dy<< "dx : "<<dx<<"dw : "<<dw<<endl;
   for (int y = 0; y < dy - dw; y++) {
     for (int x = dw; x < dx - dw; x++) {
       if (array[y][x] == 0)
