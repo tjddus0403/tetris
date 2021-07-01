@@ -33,6 +33,7 @@ TetrisState CTetris::accept(char key){
     Matrix tempBlk;
     if(key>='0'&&key<='6')
     {
+        idxBlockType=key-'0';
         if(justStarted==false)
             deleteFullLines();
         iCScreen=Matrix(oCScreen);
