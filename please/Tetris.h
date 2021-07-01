@@ -14,13 +14,13 @@ class Tetris {
         int* arrayScreen;
         bool justStarted;
         int idxBlockDegree;
+        int idxBlockType;
         TetrisState state;
         int top;
         int left;
         Matrix currBlk;
     public:
         Matrix oScreen;
-        int idxBlockType;
         static int iScreenDw;
         Tetris();
         Tetris(int Dy, int Dx);
