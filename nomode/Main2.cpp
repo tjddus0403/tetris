@@ -144,10 +144,10 @@ int *setOfCBlockArrays[] = {
 #if 1
 void drawScreen(CTetris *board)
 {
-  int dy = board->oScreen.get_dy();
-  int dx = board->oScreen.get_dx();
+  int dy = board->oCScreen.get_dy();
+  int dx = board->oCScreen.get_dx();
   int dw = board->iScreenDw;
-  int **array = board->oScreen.get_array();
+  int **array = board->oCScreen.get_array();
   system("clear");
 
   for (int y = 0; y < dy - dw ; y++) {
