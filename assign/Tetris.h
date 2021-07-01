@@ -30,7 +30,10 @@ class Tetris {
         TetrisState accept(char key);
         void deleteFullLines();
 };
+
+/*
 int Tetris::iScreenDw=0;
 Matrix** Tetris::setOfBlockObjects;
 int Tetris::nBlockTypes=0;
 int Tetris::nBlockDegrees=0;
+*/

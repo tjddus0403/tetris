@@ -1,10 +1,12 @@
 #include "CTetris.h"
 #include<math.h>
+
 CTetris::~CTetris(){
     for(int i=0;i<nBlockTypes;i++)
         delete [] setOfCBlockObjects[i];
     delete [] setOfCBlockObjects;
 }
+
 void CTetris::init(int *setOfBlockArrays[], int MAX_BLK_TYPES, int MAX_BLK_DEGREES){
     Tetris::init(setOfBlockArrays,MAX_BLK_TYPES,MAX_BLK_DEGREES);
     nBlockDegrees=MAX_BLK_DEGREES;
@@ -28,6 +30,7 @@ void CTetris::init(int *setOfBlockArrays[], int MAX_BLK_TYPES, int MAX_BLK_DEGRE
         }
     }
 }
+
 TetrisState CTetris::accept(char key){
     state=Running;
     Matrix tempBlk;

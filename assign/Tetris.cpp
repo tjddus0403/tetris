@@ -1,7 +1,11 @@
 #include "Tetris.h"
-#include "Matrix.cpp"
-#include "Matrix.h"
+// #include "Matrix.h"
 #include<cmath>
+
+int Tetris::iScreenDw=0;
+Matrix** Tetris::setOfBlockObjects;
+int Tetris::nBlockTypes=0;
+int Tetris::nBlockDegrees=0;
 
 Tetris::Tetris(){
     iScreenDx=0;
