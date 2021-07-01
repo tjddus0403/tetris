@@ -1,6 +1,6 @@
 #include "CTetris.h"
 #include<math.h>
-
+Matrix** CTetris::setOfCBlockObjects;
 CTetris::~CTetris(){
     for(int i=0;i<nBlockTypes;i++)
         delete [] setOfCBlockObjects[i];
