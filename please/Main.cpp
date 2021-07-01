@@ -1,5 +1,5 @@
-﻿#include <iostream>
-#include <cstdlib>
+//#include <iostream>
+//#include <cstdlib>
 #include <ctime>
 #include <stdio.h>
 #include <termios.h>
@@ -13,12 +13,13 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <signal.h>
-#include "Tetris.cpp"
+//#include "Tetris.h"
 #include "ttymodes.c"
-#include "CTetris.cpp"
+#include "CTetris.h"
 #include<fstream>
 #include"keylog.cpp"
 using namespace std;
+
 #define color_normal "\x1b[0m"
 #define color_red "\x1b[31m"
 #define color_green "\x1b[32m"
