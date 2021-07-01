@@ -12,10 +12,10 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <signal.h>
-#include "Tetris.cpp"
-#include "ttymodes.c"
-#include "CTetris.cpp"
+
+#include "CTetris.h"
 using namespace std;
+
 #define color_normal "\x1b[0m"
 #define color_red "\x1b[31m"
 #define color_green "\x1b[32m"
@@ -197,7 +197,7 @@ int main(int argc, char *argv[]) {
   TetrisState state;
 
   srand((unsigned int)time(NULL));
-  key = (char)('0' + (board->idxBlockType=rand() % MAX_BLK_TYPES));
+  key = (char)('0' + (rand() % MAX_BLK_TYPES));
 #endif
 
   registerAlarm();
@@ -205,7 +205,7 @@ int main(int argc, char *argv[]) {
 #if 1
     state = board->accept(key);
     if (state == NewBlock) {
-        key = (char)('0' + (board->idxBlockType=rand() % MAX_BLK_TYPES));
+        key = (char)('0' + (rand() % MAX_BLK_TYPES));
         state = board->accept(key);
         if (state == Finished) {
 	drawScreen(board);
