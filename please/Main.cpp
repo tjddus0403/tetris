@@ -1,5 +1,5 @@
-//#include <iostream>
-//#include <cstdlib>
+#include <iostream>
+#include <cstdlib>
 #include <ctime>
 #include <stdio.h>
 #include <termios.h>
@@ -13,8 +13,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <signal.h>
-//#include "Tetris.h"
-//#include "ttymodes.c"
+
 #include "CTetris.h"
 #include<fstream>
 #include"keylog.cpp"
@@ -216,8 +215,7 @@ char getKey(bool is_keystroke_needed,CTetris *board){
   } 
   else{
     srand((unsigned int)time(NULL));
-    board->idxBlockType=rand()%MAX_BLK_TYPES;
-    key=(char)('0'+board->idxBlockType);
+    key=(char)('0'+rand()%MAX_BLK_TYPES);
   }
   if(is_log_mode) log_key(key);
   return key;
