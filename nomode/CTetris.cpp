@@ -22,6 +22,7 @@ void CTetris::init(int *setOfBlockArrays[], int MAX_BLK_TYPES, int MAX_BLK_DEGRE
             for(int k=0;k!=-1;k=setOfBlockArrays[i*MAX_BLK_DEGREES+j][where++]){
                 len++;
                 if(k==1) setOfBlockArrays[i*MAX_BLK_DEGREES+j][where-1]=i+1;
+                cout<<"hey"<<endl;
             }
             len--;
             len=sqrt(len);
