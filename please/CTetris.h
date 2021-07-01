@@ -20,4 +20,4 @@ class CTetris : public Tetris {
         TetrisState accept(char key);
         void deleteFullLines();
 };
-Matrix** CTetris::setOfCBlockObjects;
+//Matrix** CTetris::setOfCBlockObjects;
