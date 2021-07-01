@@ -17,6 +17,17 @@
 #include "CTetris.h"
 using namespace std;
 
+#define color_normal "\x1b[0m"
+#define color_red "\x1b[31m"
+#define color_green "\x1b[32m"
+#define color_yellow "\x1b[33m"
+#define color_blue "\x1b[34m"
+#define color_magenta "\x1b[35m" //purple
+#define color_cyan "\x1b[36m"
+#define color_white "\x1b[37m"
+#define color_black "\x1b[30m"
+#define color_pink "\x1b[95m"
+#define b_color_black "\x1b[40m"
 
 /**************************************************************/
 /**************** Linux System Functions **********************/
@@ -85,40 +96,40 @@ void registerAlarm() {
 #define MAX_BLK_TYPES 7
 #define MAX_BLK_DEGREES 4
 
-int T0D0[] = { 1, 1, 1, 1, -1 };
-int T0D1[] = { 1, 1, 1, 1, -1 };
-int T0D2[] = { 1, 1, 1, 1, -1 };
-int T0D3[] = { 1, 1, 1, 1, -1 };
+int T3D0[] = { 1, 1, 1, 1, -1 }; //O
+int T3D1[] = { 1, 1, 1, 1, -1 };
+int T3D2[] = { 1, 1, 1, 1, -1 };
+int T3D3[] = { 1, 1, 1, 1, -1 };
 
-int T1D0[] = { 0, 1, 0, 1, 1, 1, 0, 0, 0, -1 };
-int T1D1[] = { 0, 1, 0, 0, 1, 1, 0, 1, 0, -1 };
-int T1D2[] = { 0, 0, 0, 1, 1, 1, 0, 1, 0, -1 };
-int T1D3[] = { 0, 1, 0, 1, 1, 0, 0, 1, 0, -1 };
+int T5D0[] = { 0, 1, 0, 1, 1, 1, 0, 0, 0, -1 }; //T
+int T5D1[] = { 0, 1, 0, 0, 1, 1, 0, 1, 0, -1 };
+int T5D2[] = { 0, 0, 0, 1, 1, 1, 0, 1, 0, -1 };
+int T5D3[] = { 0, 1, 0, 1, 1, 0, 0, 1, 0, -1 };
 
-int T2D0[] = { 1, 0, 0, 1, 1, 1, 0, 0, 0, -1 };
-int T2D1[] = { 0, 1, 1, 0, 1, 0, 0, 1, 0, -1 };
-int T2D2[] = { 0, 0, 0, 1, 1, 1, 0, 0, 1, -1 };
-int T2D3[] = { 0, 1, 0, 0, 1, 0, 1, 1, 0, -1 };
+int T1D0[] = { 1, 0, 0, 1, 1, 1, 0, 0, 0, -1 }; //J
+int T1D1[] = { 0, 1, 1, 0, 1, 0, 0, 1, 0, -1 };
+int T1D2[] = { 0, 0, 0, 1, 1, 1, 0, 0, 1, -1 };
+int T1D3[] = { 0, 1, 0, 0, 1, 0, 1, 1, 0, -1 };
 
-int T3D0[] = { 0, 0, 1, 1, 1, 1, 0, 0, 0, -1 };
-int T3D1[] = { 0, 1, 0, 0, 1, 0, 0, 1, 1, -1 };
-int T3D2[] = { 0, 0, 0, 1, 1, 1, 1, 0, 0, -1 };
-int T3D3[] = { 1, 1, 0, 0, 1, 0, 0, 1, 0, -1 };
+int T2D0[] = { 0, 0, 1, 1, 1, 1, 0, 0, 0, -1 }; //L
+int T2D1[] = { 0, 1, 0, 0, 1, 0, 0, 1, 1, -1 };
+int T2D2[] = { 0, 0, 0, 1, 1, 1, 1, 0, 0, -1 };
+int T2D3[] = { 1, 1, 0, 0, 1, 0, 0, 1, 0, -1 };
 
-int T4D0[] = { 0, 1, 0, 1, 1, 0, 1, 0, 0, -1 };
-int T4D1[] = { 1, 1, 0, 0, 1, 1, 0, 0, 0, -1 };
-int T4D2[] = { 0, 1, 0, 1, 1, 0, 1, 0, 0, -1 };
-int T4D3[] = { 1, 1, 0, 0, 1, 1, 0, 0, 0, -1 };
+int T6D0[] = { 1, 1, 0, 0, 1, 1, 0, 0, 0, -1 }; //Z
+int T6D1[] = { 0, 0, 1, 0, 1, 1, 0, 1, 0, -1 };
+int T6D2[] = { 0, 0, 0, 1, 1, 0, 0, 1, 1, -1 };
+int T6D3[] = { 0, 1, 0, 1, 1, 0, 1, 0, 0, -1 };
 
-int T5D0[] = { 0, 1, 0, 0, 1, 1, 0, 0, 1, -1 };
-int T5D1[] = { 0, 0, 0, 0, 1, 1, 1, 1, 0, -1 };
-int T5D2[] = { 0, 1, 0, 0, 1, 1, 0, 0, 1, -1 };
-int T5D3[] = { 0, 0, 0, 0, 1, 1, 1, 1, 0, -1 };
+int T4D0[] = { 0, 1, 1, 1, 1, 0, 0, 0, 0, -1 }; //S
+int T4D1[] = { 0, 1, 0, 0, 1, 1, 0, 0, 1, -1 };
+int T4D2[] = { 0, 0, 0, 0, 1, 1, 1, 1, 0, -1 };
+int T4D3[] = { 1, 0, 0, 1, 1, 0, 0, 1, 0, -1 };
 
-int T6D0[] = { 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, -1 };
-int T6D1[] = { 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1 };
-int T6D2[] = { 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, -1 };
-int T6D3[] = { 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1 };
+int T0D0[] = { 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1 }; //I
+int T0D1[] = { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, -1 };
+int T0D2[] = { 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1 };
+int T0D3[] = { 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, -1 };
   
 int *setOfCBlockArrays[] = {
   T0D0, T0D1, T0D2, T0D3,
@@ -142,23 +153,23 @@ void drawScreen(CTetris *board)
   for (int y = 0; y < dy - dw ; y++) {
     for (int x = dw ; x < dx - dw ; x++) {
       if (array[y][x] == 0)
-	cout << color_black << "□ " << color_normal;
+	cout << color_white << "□" << color_normal;
       else if (array[y][x] == 1)
-	cout << color_black << "■ " << color_normal;
+	cout << color_red << "■" << color_normal;
       else if (array[y][x] == 2)
-	cout << color_green << "■ " << color_normal;
+	cout << color_green << "■" << color_normal;
       else if (array[y][x] == 3)
-	cout << color_cyan << "■ " << color_normal;
+	cout << color_yellow << "■" << color_normal;
       else if (array[y][x] == 4)
-	cout << color_blue << "■ " << color_normal;
+	cout << color_blue << "■" << color_normal;
       else if (array[y][x] == 5)
-	cout << color_yellow << "■ " << color_normal;
+	cout << color_magenta << "■" << color_normal;
       else if (array[y][x] == 6)
-	cout << color_red << "■ " << color_normal;
+	cout << color_cyan << "■" << color_normal;
       else if (array[y][x] == 7)
-	cout << color_magenta << "■ " << color_normal;
+	cout << color_pink << "■" << color_normal;
       else // array[y][x] == 1 // wall
-	cout << b_color_black << "■ " << color_normal;
+	cout << b_color_black << "■" << color_normal;
     }
     cout << endl;
   }
