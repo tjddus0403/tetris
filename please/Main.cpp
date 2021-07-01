@@ -14,7 +14,7 @@
 #include <arpa/inet.h>
 #include <signal.h>
 //#include "Tetris.h"
-#include "ttymodes.c"
+//#include "ttymodes.c"
 #include "CTetris.h"
 #include<fstream>
 #include"keylog.cpp"
