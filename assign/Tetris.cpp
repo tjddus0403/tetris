@@ -78,6 +78,7 @@ TetrisState Tetris::accept(char key){
             deleteFullLines();
         iScreen=Matrix(oScreen);
         idxBlockDegree=0;
+        idxBlockType=key-'0';
         currBlk=Matrix(setOfBlockObjects[idxBlockType][idxBlockDegree]);
         top=0;
         left=iScreenDw+iScreenDx/2-currBlk.get_dx()/2;
