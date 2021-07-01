@@ -141,7 +141,7 @@ int *setOfCBlockArrays[] = {
   T6D0, T6D1, T6D2, T6D3,
 };
 
-#if 0
+#if 1
 void drawScreen(CTetris *board)
 {
   int dy = board->oScreen.get_dy();
@@ -193,7 +193,7 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
-#if 0
+#if 1
   CTetris::init(setOfCBlockArrays, MAX_BLK_TYPES, MAX_BLK_DEGREES);
   CTetris *board = new CTetris(dy, dx);
   TetrisState state;
@@ -204,7 +204,7 @@ int main(int argc, char *argv[]) {
 
   registerAlarm();
   while (key != 'q') {
-#if 0
+#if 1
     state = board->accept(key);
     if (state == NewBlock) {
       key = (char)('0' + rand() % MAX_BLK_TYPES);
@@ -221,7 +221,7 @@ int main(int argc, char *argv[]) {
     key = getch();
     cout << key << endl;
   }
-#if 0
+#if 1
   delete board;
 #endif
 
