@@ -157,6 +157,7 @@ class KeyProducer(threading.Thread):
 		while not isGameDone:
 			try:
 				key = getChar()
+				print(key,"!!!!!!!!!!!")
 			except:
 				isGameDone = True
 				print('getChar() wakes up!!')
