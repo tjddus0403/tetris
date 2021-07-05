@@ -241,6 +241,7 @@ if __name__ == "__main__":
 
 	for th in threads:
 		th.start()
+		print("Start")
 	
 	for th in threads:
 		try:
