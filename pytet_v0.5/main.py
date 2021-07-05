@@ -53,7 +53,7 @@ def registerAlarm(handler, seconds):#알람 예약 함수
 	return
 
 def timeout_handler(signum, frame): 
-	#print("timeout!")
+	print("timeout!")
 	raise RuntimeError ### we have to raise error to wake up any blocking function
 	#오류 강제 발생
 	return
