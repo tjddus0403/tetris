@@ -153,7 +153,7 @@ def getChar():
 class KeyProducer(threading.Thread):
 	def run(self):
 		global isGameDone
-
+		print("KeyProducer Start!!!!!!!!!!!!!!")
 		while not isGameDone:
 			try:
 				key = getChar()
@@ -175,7 +175,9 @@ class KeyProducer(threading.Thread):
 
 class TimeOutProducer(threading.Thread):
 	def run(self):
+		print("TimeOut Start!!!!!!!!!!!")
 		while not isGameDone:
+			print("TimeOutProducer!!!!!!!!!!!!!!!!!!!!!")
 			time.sleep(1)
 			cv.acquire()
 			print("TimeOutProducer Lock!!!!!")
@@ -188,6 +190,7 @@ class TimeOutProducer(threading.Thread):
 class Consumer(threading.Thread):
 	def run(self):
 		global isGameDone
+		print("Consumer Start!!!!!!")
 
 		setOfBlockArrays = initSetOfBlockArrays()
 
@@ -200,6 +203,7 @@ class Consumer(threading.Thread):
 		printScreen(board)
 
 		while not isGameDone:
+			print("Consumer!!!!!!!!!!!!!!")
 			cv.acquire()
 			print("Consumer Lock!!!!!")
 			while len(queue) < 1:
