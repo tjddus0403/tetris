@@ -162,9 +162,11 @@ class KeyProducer(threading.Thread):
 				print('getChar() wakes up!!')
 				break
 			cv.acquire()
+			print("KeyProducer Lock!!!!!")
 			queue.append(key)
 			cv.notify()
 			cv.release()
+			print("KeyProducer release!!!!!")
 			if key == 'q':
 				isGameDone = True
 				break
@@ -175,9 +177,11 @@ class TimeOutProducer(threading.Thread):
 		while not isGameDone:
 			time.sleep(1)
 			cv.acquire()
+			print("TimeOutProducer Lock!!!!!")
 			queue.append('s')
 			cv.notify()
 			cv.release()
+			print("TimeOutProducer release!!!!!")
 		return
 
 class Consumer(threading.Thread):
@@ -196,10 +200,12 @@ class Consumer(threading.Thread):
 
 		while not isGameDone:
 			cv.acquire()
+			print("Consumer Lock!!!!!")
 			while len(queue) < 1:
 				cv.wait()
 			key = queue.pop(0)
 			cv.release()
+			print("Consumer release!!!!!")
 
 			if key == 'q':
 				state = TetrisState.Finished

@@ -44,7 +44,7 @@ def unregisterAlarm(): #알람 초기화 함수(예약된 알람이 아무것도
 	#초가 0인 경우, 알람 취소됨(알람이 없는거나 마찬가지)
 	#예약된 알람이 없는 경우 0반환/ alarm은 이전에 예약된 알람이 전달될 때까지 남은 시간(초) 반환
 	return 
-
+#Blocking함수를 깨워주기 위한 목적
 def registerAlarm(handler, seconds):#알람 예약 함수
 	unregisterAlarm() #예약된 알람이 없는 상태 설정
 	signal.signal(signal.SIGALRM, handler) #SIGALRM 처리기를 함수handler로 설정
