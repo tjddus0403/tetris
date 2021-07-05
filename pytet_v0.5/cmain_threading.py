@@ -113,7 +113,7 @@ def _printScreen(board):
 	return
 
 def printScreen(board):
-	clearScreen()
+	#clearScreen()
 	array = board.oCScreen.get_array()
 
 	for y in range(board.oScreen.get_dy()-Tetris.iScreenDw):
@@ -245,6 +245,7 @@ if __name__ == "__main__":
 	for th in threads:
 		try:
 			th.join()
+			print("join()!!!!!!!!")
 		except:
 			print('th.join() wakes up!!')
 	
