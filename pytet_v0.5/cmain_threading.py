@@ -155,9 +155,10 @@ class KeyProducer(threading.Thread): #Thread 클래스 상속받은 생산자 th
 		global isGameDone
 		print("KeyProducer Start!!!!!!!!!!!!!!")
 		while not isGameDone:
-			try:
+			try: #예외 발생 가능한 코드
 				key=getChar()
 			except:
+		#예외 발생 시, 공유변수 isGameDone을 True로 설정 후 반복문 탈출해 KeyProducer 스레드 종료
 				isGameDone = True
 				print('getChar() wakes up!!')
 				break
@@ -227,27 +228,39 @@ class Consumer(threading.Thread): #Thread 클래스 상속받은 소비자 threa
 				isGameDone = True
 				print('Game Over!!!')
 				os.kill(os.getpid(), signal.SIGINT)
+		#os.kill () 메서드는 지정된 프로세스 ID를 사용하여 지정된 신호를 프로세스에 보내는 데 사용
+		#구문 : os.kill (pid, sig)
+		#즉, 현재 프로세스에 SIGINT 신호 보냄
 				break
 		return
 
 def signal_handler(num, stack):
 	print('signal_handler called!!')
-	raise RuntimeError
+	raise RuntimeError #오류 강제 발생
 
 if __name__ == "__main__":
 	global fd
 	global old_settings
 
-	signal.signal(signal.SIGINT, signal_handler)
+	signal.signal(signal.SIGINT, signal_handler) #SIGINT 처리기를 함수 signal_handler로 설정
+	#SIGINT 발생 시, signal_handler 실행됨
 
 	threads = list()
 	threads.append(Consumer())
 	threads.append(KeyProducer())
 	threads.append(TimeOutProducer())
-
+	
+	#####main.py에선 getChar안에 속해있던 구문들#####
+	#->termios.tcsetattr()이 입력때마다 반복되지 않고 마지막에 한 번 실행
 	fd = sys.stdin.fileno()
+	#fileno()는 스트림의 기본이 되는 file descripter를 반환하는 함수
+	#파일 디스크립터 0이 표준 입력(stdin)을 나타냄. 따라서 fd=0 
 	old_settings = termios.tcgetattr(fd)
+	#termios.tcgetattr() : fd에 대한 tty attribute(속성)을 포함하는 리스트 반환
 	tty.setcbreak(sys.stdin.fileno())
+	#fd 모드를 cbreak로 변경
+	#when이 생략되었기에 기본값 termios.TCSAFLUSH로 termios.tcsetattr()로 전달됨
+	#따라서 모드가 cbreak로 변경된 fd에 대한 tty attribute를 attribute로 설정
 
 	for th in threads:
 		th.start()
@@ -261,6 +274,8 @@ if __name__ == "__main__":
 			print('th.join() wakes up!!')
 	
 	termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+	# 다시 원래 상태로 복귀
+	# fd에 대한 tty 어트리뷰트를 old_settings로 설정
 	print('Program terminated...')
 
 ### end of main.py
