@@ -14,7 +14,7 @@ import time
 ##############################################################
 ### Data model related code
 ##############################################################
-def rotate(m_array):
+def rotate(m_array): #cmain.py와 동일
     size = len(m_array)
     r_array = [[0] * size for _ in range(size)]
 
@@ -24,7 +24,7 @@ def rotate(m_array):
 
     return r_array
 
-def initSetOfBlockArrays():
+def initSetOfBlockArrays(): #cmain.py와 동일
     global nBlocks
 
     arrayBlks = [ [ [ 0, 0, 1, 0 ],     # I shape
@@ -62,7 +62,7 @@ def initSetOfBlockArrays():
 
     return setOfBlockArrays
     
-def processKey(board, key):
+def processKey(board, key): #cmain.py와 동일
 	global nBlocks 
 
 	state = board.accept(key)
@@ -85,7 +85,7 @@ def processKey(board, key):
 ### UI code
 ##############################################################
 
-def clearScreen(numlines=100):
+def clearScreen(numlines=100): #cmain.py와 동일
 	if os.name == 'posix':
 		os.system('clear')
 	elif os.name in ['nt', 'dos', 'ce']:
@@ -94,7 +94,7 @@ def clearScreen(numlines=100):
 		print('\n' * numlines)
 	return
 
-def _printScreen(board):
+def _printScreen(board): #main.py의 printScreen
 	clearScreen()
 	array = board.oScreen.get_array()
 
@@ -112,7 +112,7 @@ def _printScreen(board):
 	print()
 	return
 
-def printScreen(board):
+def printScreen(board): #cmain.py와 동일
 	#clearScreen()
 	array = board.oCScreen.get_array()
 
@@ -142,52 +142,53 @@ def printScreen(board):
 	print()
 	return
 
-queue = list()
-cv = threading.Condition()
-isGameDone = False
+queue = list() #공유변수 (Critical Section)
+cv = threading.Condition() # Condition variable
+isGameDone = False #공유변수
 
-def getChar():
+def getChar(): #사용자로부터 문자 하나 입력 받아 반환하는 함수
 	ch = sys.stdin.read(1)
 	return ch
 
-class KeyProducer(threading.Thread):
+class KeyProducer(threading.Thread): #Thread 클래스 상속받은 생산자 thread
 	def run(self):
 		global isGameDone
 		print("KeyProducer Start!!!!!!!!!!!!!!")
 		while not isGameDone:
 			try:
-				key = getChar()
-				print(key,"!!!!!!!!!!!")
-			except:
 				isGameDone = True
 				print('getChar() wakes up!!')
 				break
+			############
 			cv.acquire()
 			print("KeyProducer Lock!!!!!")
 			queue.append(key)
 			cv.notify()
 			cv.release()
+			############
 			print("KeyProducer release!!!!!")
 			if key == 'q':
 				isGameDone = True
 				break
 		return
 
-class TimeOutProducer(threading.Thread):
+class TimeOutProducer(threading.Thread): #Thread 클래스 상속받은 생산자 thread
 	def run(self):
 		print("TimeOut Start!!!!!!!!!!!")
 		while not isGameDone:
 			print("TimeOutProducer!!!!!!!!!!!!!!!!!!!!!")
 			time.sleep(1)
+			############
 			cv.acquire()
 			print("TimeOutProducer Lock!!!!!")
 			queue.append('s')
 			cv.notify()
 			cv.release()
+			############
 			print("TimeOutProducer release!!!!!")
 		return
 
-class Consumer(threading.Thread):
+class Consumer(threading.Thread): #Thread 클래스 상속받은 소비자 thread
 	def run(self):
 		global isGameDone
 		print("Consumer Start!!!!!!")
@@ -204,12 +205,14 @@ class Consumer(threading.Thread):
 
 		while not isGameDone:
 			print("Consumer!!!!!!!!!!!!!!")
+			############
 			cv.acquire()
 			print("Consumer Lock!!!!!")
 			while len(queue) < 1:
 				cv.wait()
 			key = queue.pop(0)
 			cv.release()
+			############
 			print("Consumer release!!!!!")
 
 			if key == 'q':
