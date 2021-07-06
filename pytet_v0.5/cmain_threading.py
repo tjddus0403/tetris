@@ -156,8 +156,9 @@ class KeyProducer(threading.Thread): #Thread 클래스 상속받은 생산자 th
 		print("KeyProducer Start!!!!!!!!!!!!!!")
 		while not isGameDone:
 			try:
-				isGameDone = True
+				key=getChar()
 			except:
+				isGameDone = True
 				print('getChar() wakes up!!')
 				break
 			############
