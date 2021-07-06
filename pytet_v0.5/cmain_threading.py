@@ -274,7 +274,8 @@ if __name__ == "__main__":
 			print('th.join() wakes up!!')
 	
 	termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-	#다시 원래 상태로 복귀
+	# 다시 원래 상태로 복귀
+	# fd에 대한 tty 어트리뷰트를 old_settings로 설정
 	print('Program terminated...')
 
 ### end of main.py
