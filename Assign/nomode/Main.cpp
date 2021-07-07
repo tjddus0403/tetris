@@ -55,6 +55,7 @@ size_t nbytes : 읽어들일 데이터의 최대 길이 (buf의 길이보다 길
       break; 
     else if (n < 0) { //0보다 짧으면 
       if (errno == EINTR) { //EINTR 에러이면
+//시스템 호출이 진행되는 동안 신호가 발생하면 많은 시스템 호출에서 EINTR 오류 코드를 보고
 	if (saved_key != 0) { //saved_key값이 0이 아니면
 	  ch = saved_key; //saved_key값으로 ch설정
 	  saved_key = 0; //saved_key값은 0으로 돌려놓고
