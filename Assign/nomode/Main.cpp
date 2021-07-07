@@ -72,28 +72,31 @@ void sigint_handler(int signo) {
 }
 
 void sigalrm_handler(int signo) {
-  alarm(1);
-  saved_key = 's';
+  alarm(1); //1초 후에 프로세스에 SIGARLM 전달 , SIGARLM을 sigalrm_handler로 처리하는데 처리기 안에
+	//alarm(1)이 있기 때문에 1초마다 계속 SIGARLM 전달되게 
+  saved_key = 's'; //saved_key값 's'로 설정
 }
 
 void unregisterAlarm() {
-	alarm(0);
+	alarm(0); //0초 후에 프로세스에 SIGALRM 전달 (SIGARLM 기본행동 : 프로세스 종료)
 }
 
 void registerAlarm() {
-  struct sigaction act, oact;
-  act.sa_handler = sigalrm_handler;
-  sigemptyset(&act.sa_mask);
-#ifdef SA_INTERRUPT
-  act.sa_flags = SA_INTERRUPT;
+  struct sigaction act, oact; //sigaction 구조체 타입의 객체 act, oact생성
+  act.sa_handler = sigalrm_handler; //act객체의 시그널을 처리하기 위한 핸들러를 sigalarm_handler로 설정
+  sigemptyset(&act.sa_mask); // 시그널 처리 중 블록될 시그널은 없음
+#ifdef SA_INTERRUPT //만약 SA_INTERRUPT가 정의되어있다면
+  act.sa_flags = SA_INTERRUPT; //이게 무슨 용도인지...
 #else
   act.sa_flags = 0;
 #endif
-  if (sigaction(SIGALRM, &act, &oact) < 0) {
-    cerr << "sigaction error" << endl;
-    exit(1);
+  if (sigaction(SIGALRM, &act, &oact) < 0) { 
+//act : 설정할 행동(새롭게 지정할 처리 행동), oact : 이전 행동(이 함수를 호출하기 전에 지정된 행동 정보 입력됨)
+//반환값 : 성공 시, 0 / 실패 시, -1
+    cerr << "sigaction error" << endl; //실패 시, 에러문구 출력
+    exit(1); //강제종료
   }
-  alarm(1);
+  alarm(1); //성공 시, 1초 후 프로세스에 SIGARLM 
 }
 
 /**************************************************************/
