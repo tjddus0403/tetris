@@ -39,20 +39,26 @@ int tty_reset(int fd);	/* restore terminal's mode */
   
 /* Read 1 character - echo defines echo mode */
 char getch() {
-  char ch;
-  int n;
+  char ch; //사용자로부터 입력받아 반환할 문자
+  int n; //읽어들인 문자열 길이
   while (1) {
-    tty_cbreak(0);
+    tty_cbreak(0); //tty_cbreak(int fd) : 표준입력 cbreak모드로 전환
     n = read(0, &ch, 1);
-    tty_reset(0);
-    if (n > 0)
-      break;
-    else if (n < 0) {
-      if (errno == EINTR) {
-	if (saved_key != 0) {
-	  ch = saved_key;
-	  saved_key = 0;
-	  break;
+/*ssize_t read(int fd, void *buf, size_t nbytes);
+int fd : 읽을 파일의 파일 디스크립터 (0 : 표준 입력 (stdin), 1 : 표준 출력 (stdout), 2 : 표준 오류 (stderr))
+void *buf : 읽어들인 데이터를 저장할 버퍼(배열)
+size_t nbytes : 읽어들일 데이터의 최대 길이 (buf의 길이보다 길어선 안됨)
+반환값 : 읽어들인 데이터의 길이
+무조건 nbytes 가 리턴되는 것은 아님. 중간에 파일의 끝을 만난다면 거기까지만 읽기 때문*/
+    tty_reset(0); //tty_reset(int fd) : 표준입력 원래 모드로 돌려놓기
+    if (n > 0) //만약 읽어들인 데이터 길이가 0보다 크다면 반복문 탈출해서 ch값 반환 
+      break; 
+    else if (n < 0) { //0보다 짧으면 
+      if (errno == EINTR) { //EINTR 에러이면
+	if (saved_key != 0) { //saved_key값이 0이 아니면
+	  ch = saved_key; //saved_key값으로 ch설정
+	  saved_key = 0; //saved_key값은 0으로 돌려놓고
+	  break; //반복문 탈출해서 ch값 반환
 	}
       }
     }
