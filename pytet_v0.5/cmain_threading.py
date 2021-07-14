@@ -227,6 +227,7 @@ class Consumer(threading.Thread): #Thread 클래스 상속받은 소비자 threa
 			if state == TetrisState.Finished:
 				isGameDone = True
 				print('Game Over!!!')
+				print(os.getpid())
 				os.kill(os.getpid(), signal.SIGINT)
 		#os.kill () 메서드는 지정된 프로세스 ID를 사용하여 지정된 신호를 프로세스에 보내는 데 사용
 		#구문 : os.kill (pid, sig)
