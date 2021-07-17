@@ -68,7 +68,7 @@ def initSetOfBlockArrays():
 ### UI code
 ##############################################################
 
-def printMsg(msg):
+def printMsg(msg): 
 	window = win0
 
 	window.clear()
@@ -113,11 +113,11 @@ def getChar(): ### non-blocking mode
 ### Threading code (Observer pattern)
 ##############################################################
 
-from abc import *
+from abc import * #abc=abstract base class의 약자
 
 isGameDone = False
 
-class Publisher(metaclass = ABCMeta):
+class Publisher(metaclass = ABCMeta): 
 	@abstractmethod
 	def addObserver(self, observer):
 		pass
