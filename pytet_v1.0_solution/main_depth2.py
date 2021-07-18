@@ -72,10 +72,10 @@ def printMsg(msg):
 	window = win0
 
 	window.clear()
-	window.addstr(0, 0, msg)
+	window.addstr(0, 0, msg) #addstr(지정된 문자열을 현재 위치에 출력)
 
 	lock.acquire()
-	window.refresh()
+	window.refresh() 
 	lock.release()
 	return
 
@@ -329,20 +329,24 @@ class View(threading.Thread, Observer):
 
 def main(args):
 	global lock
-	global win0
+	global win0 
 
-	lock = threading.Lock()
+	lock = threading.Lock() 
 
-	screen = curses.initscr()
-	screen.clear()
+	screen = curses.initscr() #curses 초기화
+	screen.clear() #현재 화면 지우기
 
-	curses.echo()
-	curses.start_color()
-	curses.use_default_colors()
+	curses.echo() #입력된 문자를 화면상에 출력
+	curses.start_color() 
+	#8개의 기본 색상(검정, 빨강, 녹색, 노랑, 파랑, 마젠타, 시안 및 흰색)과 
+	#터미널이 지원할 수 있는 색상과 색상 쌍의 최댓값인 curses 모듈의 
+	#2개의 전역 변수 COLORS와 COLOR_PAIRS를 초기화합니다. 
+	#또한 터미널의 전원을 켰을 때의 값으로 터미널의 색상을 복원합니다.
+	curses.use_default_colors() #터미널에서 기본색 사용하도록 허용
 
-	win1 = curses.newwin(20, 30, 0, 0)
-	win2 = curses.newwin(20, 30, 0, 40)
-	win0 = curses.newwin(3, 70, 21, 0)
+	win1 = curses.newwin(20, 30, 0, 0) #높이 20, 너비 30인 screen을 (0,0) 좌표에 생성
+	win2 = curses.newwin(20, 30, 0, 40) #높이 20, 너비 30인 screen을 (0,40) 좌표에 생성
+	win0 = curses.newwin(3, 70, 21, 0) #높이 3, 너비 70인 screen을 (21,0) 좌표에 생성
 
 	th_view1 = View('view1')
 	th_view1.addWindow(win1)
