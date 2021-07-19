@@ -76,6 +76,7 @@ def printMsg(msg):
 
 	lock.acquire()
 	window.refresh() #화면 갱신
+	time.sleep(5)
 	lock.release()
 	return
 
