@@ -159,7 +159,7 @@ class KeyController(threading.Thread, Publisher):
 				pass
 
 		printMsg('%s terminated... Press any key to continue' % self.name)
-		time.sleep(5)
+		time.sleep(1)
 		self.notifyObservers('')
 		return
 
@@ -187,7 +187,7 @@ class TimeController(threading.Thread, Publisher):
 			self.notifyObservers('y')
 
 		printMsg('%s terminated... Press any key to continue' % self.name)
-		time.sleep(5)
+		time.sleep(1)
 		self.notifyObservers('')
 		return
 
@@ -280,7 +280,7 @@ class Model(threading.Thread, Observer, Publisher):
 				break
 
 		printMsg('%s terminated... Press any key to continue' % self.name)
-		time.sleep(5)
+		time.sleep(1)
 		self.notifyObservers('')
 		return
 
@@ -321,7 +321,7 @@ class View(threading.Thread, Observer):
 			printWindow(self.window, obj)
 
 		printMsg('%s terminated... Press any key to continue' % self.name)
-		time.sleep(5)
+		time.sleep(1)
 		return
 
 ##############################################################
