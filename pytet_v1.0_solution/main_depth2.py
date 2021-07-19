@@ -194,7 +194,7 @@ class Model(threading.Thread, Observer, Publisher):
 	def __init__(self, *args, **kwargs):
 		super(Model, self).__init__(*args[1:], **kwargs)
 		self.name = args[0]
-		self.queue = list()
+                self.queue = list()
 		self.cv = threading.Condition()
 		self.observers = list()
 		return
@@ -350,7 +350,7 @@ def main(args):
 
 	th_view1 = View('view1')
 	th_view1.addWindow(win1)
-
+#        print(th_view1.name)
 	th_view2 = View('view2')
 	th_view2.addWindow(win2)
 
