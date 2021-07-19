@@ -75,7 +75,7 @@ def printMsg(msg):
 	window.addstr(0, 0, msg) #addstr(지정된 문자열을 현재 위치에 출력)
 
 	lock.acquire()
-	#window.refresh() #화면 
+	window.refresh() #화면 갱신
 	lock.release()
 	return
 
