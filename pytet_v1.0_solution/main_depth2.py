@@ -75,7 +75,7 @@ def printMsg(msg):
 	window.addstr(0, 0, msg) #addstr(지정된 문자열을 현재 위치에 출력)
 
 	lock.acquire()
-	window.refresh() 
+	window.refresh() #화면 
 	lock.release()
 	return
 
@@ -158,7 +158,7 @@ class KeyController(threading.Thread, Publisher):
 				pass
 
 		printMsg('%s terminated... Press any key to continue' % self.name)
-		time.sleep(1)
+		time.sleep(5)
 		self.notifyObservers('')
 		return
 
@@ -186,7 +186,7 @@ class TimeController(threading.Thread, Publisher):
 			self.notifyObservers('y')
 
 		printMsg('%s terminated... Press any key to continue' % self.name)
-		time.sleep(1)
+		time.sleep(5)
 		self.notifyObservers('')
 		return
 
@@ -279,7 +279,7 @@ class Model(threading.Thread, Observer, Publisher):
 				break
 
 		printMsg('%s terminated... Press any key to continue' % self.name)
-		time.sleep(1)
+		time.sleep(5)
 		self.notifyObservers('')
 		return
 
@@ -320,7 +320,7 @@ class View(threading.Thread, Observer):
 			printWindow(self.window, obj)
 
 		printMsg('%s terminated... Press any key to continue' % self.name)
-		time.sleep(1)
+		time.sleep(5)
 		return
 
 ##############################################################
@@ -350,7 +350,7 @@ def main(args):
 
 	th_view1 = View('view1')
 	th_view1.addWindow(win1)
-	print(th_view1.name)
+	
 	th_view2 = View('view2')
 	th_view2.addWindow(win2)
 
