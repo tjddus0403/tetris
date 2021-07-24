@@ -347,12 +347,13 @@ class TimeController:public Publisher{ //TimeController 클래스
 /**************************************************************/
 
 int main() {
-  setlocale(LC_ALL,""); //□, ■ 출력을 위해
-  initscr(); //ncurses를 사용하려면 반드시 초기화 해주어야 함
+  setlocale(LC_ALL,""); //□, ■ 출력할 수 있게 함
+  initscr(); //curses모드 시작 (curses를 사용하려면 반드시 초기화 해주어야 함)
   clear(); //창 지우기
-  echo(); //쓰기 모드 설정
-  start_color(); //
-  use_default_colors(); 
+  //echo(); //echo모드 사용 (사용자로부터 입력받은 문자를 출력할 수 있도록 설정)
+  //getch를 사용하는 경우를 말함 (이번 코드에서 사용하지 않아도 될 듯 함)
+  start_color(); //color사용할 수 있게 함
+  use_default_colors(); //기본 색상 사용할 수 있게 함
   WINDOW *win1,*win2; //테트리스가 진행될 창 win1, win2 생성
   win1=newwin(20, 30, 0, 0); //win1은 20*30크기로 (0,0)좌표에 생성
   win2=newwin(20, 30, 0, 60); //win2는 20*30크기로 (0,60)좌표에 생성
@@ -385,8 +386,10 @@ int main() {
   for(int i=0;i<threads.size();i++){ //반복문 통해 각 스레드 종료시키기
     threads[i].join();
   }
-  Tetris::kinit(); //
-  printMsg("Program terminated!\n");
-  endwin();
+  Tetris::kinit(); //테트리스 전역변수 중 동적할당된 setOfBlockObject를 delete해줌
+  //이것을 각 객체가 소멸할 때 delete board에서 함께 실행되도록 했더니 setOfBlockObject이
+  //두 번 delete되어 invalid pointer 에러가 생기기 때문에 한번만 delete되도록 마지막에 해줌
+  printMsg("Program terminated!\n"); //printMsg통해 프로그램 종료 메시지 출력
+  endwin(); //curses모드 종료
   return 0;
 }
