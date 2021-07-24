@@ -124,7 +124,7 @@ int T0D1[] = { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, -1 };
 int T0D2[] = { 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1 };
 int T0D3[] = { 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, -1 };
 
-int *setOfBlockArrays[] = {
+int *setOfBlockArrays[] = { 
   T0D0, T0D1, T0D2, T0D3,
   T1D0, T1D1, T1D2, T1D3,
   T2D0, T2D1, T2D2, T2D3,
@@ -168,6 +168,7 @@ TetrisState processKey(Tetris *board, char key, WINDOW* win){
   if(state!=Finished) return state;
   return state;
 }
+
 class ModelView:public Observer{
     public:
         std::condition_variable cv;
@@ -202,7 +203,9 @@ class ModelView:public Observer{
             win=window;
         }
         void run(){
+            /*mu.lock();
             Tetris::init(setOfBlockArrays, MAX_BLK_TYPES, MAX_BLK_DEGREES);
+            mu.unlock();*/
             Tetris *board = new Tetris(20,15);
             TetrisState state;
             char key;
@@ -227,7 +230,7 @@ class ModelView:public Observer{
                 if(key=='q')
                     state=Finished;
 
-                else
+                else //printMsg("here?");
                     state=processKey(board,key,win);
                 if(state==Finished){
                     isGameDone=true;
@@ -237,7 +240,7 @@ class ModelView:public Observer{
                     break;
                 }
             }
-            //delete board;
+            delete board;
             string str=name+" terminated... Press any key to continue";
             printMsg(str);
             sleep(1);
@@ -284,7 +287,7 @@ class KeyController:public Publisher{
             threads.push_back(std::thread(&KeyController::run,this));
         }
 };
-class TimeController:public Publisher{
+class TimeController:public Publisher{ 
     public:
         string name;
         std::vector<ModelView*> observers;
@@ -304,6 +307,9 @@ class TimeController:public Publisher{
             while(!isGameDone){
                 sleep(1);
                 notifyObservers('y');
+                string str;
+                str+='y';
+                printMsg(str);
             }
             string str=name+"terminated... Press any key to continue";
             printMsg(str);
@@ -330,7 +336,8 @@ int main() {
   WINDOW *win1,*win2;
   win1=newwin(20, 30, 0, 0);
   win2=newwin(20, 30, 0, 60);
-
+  Tetris::init(setOfBlockArrays, MAX_BLK_TYPES, MAX_BLK_DEGREES); 
+  //스레드 안에서 실행하면 setOfBlockArrays(전역변수)에 동시접근 가능해서 segmentaion fault가 뜨는 것 같습니다. 
   map<char,char> keypad1={{'q','q'},{'w','w'},{'a','a'},{'s','y'},{'d','d'},{' ',' '},{'y','y'}};
   map<char,char> keypad2={{'u','q'},{'i','w'},{'j','a'},{'k','y'},{'l','d'},{'\r',' '},{'y','y'}};
 
@@ -358,6 +365,7 @@ int main() {
   for(int i=0;i<threads.size();i++){
     threads[i].join();
   }
+  Tetris::kinit();
   printMsg("Program terminated!\n");
   endwin();
   return 0;

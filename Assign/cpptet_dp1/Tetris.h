@@ -26,6 +26,7 @@ class Tetris {
         Tetris(int Dy, int Dx);
         ~Tetris();
         static void init(int *setOfBlockArrays[], int MAX_BLK_TYPES, int MAX_BLK_DEGREES);
+        static void kinit();
         void createArrayScreen(int* arrayScreen);
         TetrisState accept(char key);
         void deleteFullLines();

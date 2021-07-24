@@ -28,9 +28,9 @@ Tetris::Tetris(int Dy, int Dx){
     justStarted=true;
 }
 Tetris::~Tetris(){
-    for(int i=0;i<nBlockTypes;i++)
+    /*for(int i=0;i<nBlockTypes;i++)
         delete [] setOfBlockObjects[i];
-    delete [] setOfBlockObjects;
+    delete [] setOfBlockObjects;*/
     delete [] arrayScreen;
 }
 
@@ -53,6 +53,11 @@ void Tetris::init(int *setOfBlockArrays[], int MAX_BLK_TYPES, int MAX_BLK_DEGREE
             setOfBlockObjects[i][j]=Matrix(setOfBlockArrays[i*MAX_BLK_DEGREES+j], len, len);
         }
     }
+}
+void Tetris::kinit(){
+    for(int i=0;i<nBlockTypes;i++)
+        delete [] setOfBlockObjects[i];
+    delete [] setOfBlockObjects;
 }
 void Tetris::createArrayScreen(int* arrayScreen){
     int arrayScreenDx=iScreenDw*2+iScreenDx;
