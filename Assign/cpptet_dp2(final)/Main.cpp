@@ -100,6 +100,7 @@ int *setOfBlockArrays[] = {
   T5D0, T5D1, T5D2, T5D3,
   T6D0, T6D1, T6D2, T6D3,
 };
+//*****************Model,View제외 depth1과 모두 동일)*****************//
 bool isGameDone=false;
 std::mutex mu;
 
@@ -158,88 +159,96 @@ class Publisher{ //Publisher 클래스 (depth1과 동일)
 };
 class View:public Observer{ //View 클래스
     public:
-        string name;
-        std::queue<Matrix*> Screens;
-        WINDOW* win;
-        std::condition_variable cv;
-        std::mutex m;
-        View(string Name){
-            name=Name;
+        string name; //객체 이름
+        std::queue<Matrix*> Screens; //Screen 포인터를 저장할 큐 Screens 생성
+        WINDOW* win; //객체가 사용할 창 지정하기 위한 win포인터 생성
+        std::condition_variable cv; 
+	//Screen포인터 읽어오는 과정에서 실행 순서를 지정해줄 조건변수 생성
+        std::mutex m; //조건변수 보호할 뮤텍스 생성
+        View(string Name){ //View 객체 생성자
+            name=Name; //인자로 받은 문자열을 이름으로 설정
         }
-        virtual void update(Matrix* screen){
-            std::unique_lock<std::mutex> lk(m);
-            Screens.push(screen);
-            cv.notify_all();
-            lk.unlock();
+        virtual void update(Matrix* screen){ 
+	//Model(pub)에서 받은 screen포인터 값을 Screens에 저장하는 함수
+            std::unique_lock<std::mutex> lk(m); //락 걸기
+            Screens.push(screen); //Model(pub)로부터 전달받은 screen포인터 값 Screens에 추가
+            cv.notify_all(); //notify 이용해 잠들어 있던 스레드 깨우기
+            lk.unlock(); //락 해제
         }
-        Matrix* read(){
-            std::unique_lock<std::mutex> lk(m);
+        Matrix* read(){ //Screens에서 screen포인터 값 가져와 반환하는 함수
+            std::unique_lock<std::mutex> lk(m); //락 걸기
             
-            while(Screens.size()<1){
-                cv.wait(lk);
+            while(Screens.size()<1){ //Screens 길이가 1보다 작다면
+                cv.wait(lk); //wait 이용해 스레드 잠들게 하기
             }
-            Matrix* obj=Screens.front();
-            Screens.pop();
-            lk.unlock();
-            return obj;
+            Matrix* obj=Screens.front(); //Screens의 제일 앞에 있는 값 obj에 저장
+            Screens.pop(); //obj에 저장한 값 Screens에서 삭제
+            lk.unlock(); //락 해제
+            return obj; //obj값 반환
         }
-        void addWindow(WINDOW* window){
-            win=window;
-        }
-        void run(){
+        void addWindow(WINDOW* window){ //창 설정하는 함수
+            win=window; //전달받은 창을 객체의 창으로 설정
+        } 
+        void run(){ //스레드 돌릴 함수
             while(!isGameDone){
                 Matrix* screen=read();
                 if(screen==nullptr) break;
                 printWindow(win,*screen);
             }
             string str=name+" is terminated...";
-            printMsg(str);
-            sleep(1);
+            printMsg(str); //printMsg통해 종료 메시지 출력
+            sleep(1); //1초 쉬기
         }
-        void callme(std::vector<std::thread> *threads){
+        void callme(std::vector<std::thread> *threads){ //스레드 시작해주는 함수
             threads->push_back(std::thread(&View::run,this));
+	    //객체의 run함수를 이용해서 스레드 시작하고 threads에 해당 스레드 추가
         }
 };
 class Model:public Observer,public Publisher{ //Model 클래스
     public:
-        string name;
-        std::vector<View*> observers;
-        std::queue<char> Keys;
-        std::map<char,char> Keypad;
-        std::condition_variable cv;
-        std::mutex m;
+        string name; //객체 이름
+        std::vector<View*> observers; //객체의 observer(View)를 관리하기 위해 벡터 observers 생성
+        std::queue<char> Keys; //key값을 저장할 큐 Keys 생성
+        std::map<char,char> Keypad; //객체가 사용할 키패드 지정하기 위한 Keypad 생성
+        std::condition_variable cv; 
+	//key값을 읽어오는 과정에서 실행 순서를 지정해줄 조건변수 생성 
+        std::mutex m; //조건변수 보호할 뮤텍스 생성
         
-        Model(string Name){
-            name=Name;
+        Model(string Name){ //Model 객체 생성자
+            name=Name; //인자로 받은 문자열을 이름으로 설정
         }
-        virtual void addObserver(View* view){
-            observers.push_back(view);
+        virtual void addObserver(View* view){ //객체의 observer(View)를 추가하는 함수
+            observers.push_back(view); //observers에 전달받은 observer(View포인터) 추가
         }
-        virtual void notifyObservers(Matrix* screen){
-            for(int i=0;i<observers.size();i++){
+        virtual void notifyObservers(Matrix* screen){ 
+	//객체의 observer들에게 screen포인터를 전해주는 함수
+            for(int i=0;i<observers.size();i++){ //observers에 있는 각 observer 객체들은
                 observers[i]->update(screen);
+		//각자 자신의 Screens에 전달받은 screen포인터 값을 update해줌
             }
         }
-        virtual void update(char key){
-            std::unique_lock<std::mutex> lk(m);
-            Keys.push(key);
-            cv.notify_all();
-            lk.unlock();
+        virtual void update(char key){ //Controllers(pub)에서 받은 key값을 Keys에 저장하는 함수
+            std::unique_lock<std::mutex> lk(m); //락 걸기
+            Keys.push(key); //Controllers(pub)로 부터 전달받은 key값 Keys에 추가
+            cv.notify_all(); //notify 이용해 잠들어 있던 스레드 깨우기
+            lk.unlock(); //락 해제
         }
-        void addKeypad(map<char,char>& keypad){
-            Keypad=keypad;
+        void addKeypad(map<char,char>& keypad){ //키패드 설정하는 함수
+            Keypad=keypad; //인자로 받은 키패드를 객체의 키패드로 설정
         }
-        char read(){
-            std::unique_lock<std::mutex> lk(m);
-            while(Keys.size()<1){
-                cv.wait(lk);
+        char read(){ //Keys에서 key값 가져와 반환하는 함수
+            std::unique_lock<std::mutex> lk(m); //락 걸기
+            while(Keys.size()<1){ //Keys길이가 1보다 작으면
+                cv.wait(lk); //wait 이용해 스레드 잠들게 하기
             }
-            char key=Keys.front();
-            Keys.pop();
-            lk.unlock();
-            return key;
+            char key=Keys.front(); //Keys의 제일 앞에 있는 값 key에 저장
+            Keys.pop(); //key에 저장한 값 Keys에서 삭제
+            lk.unlock(); //락 해제
+            return key; //key값 반환
         }
         TetrisState processKey(Tetris* board, char Key){
+	//depth1의 processKey와 동일(printWindow->notifyObservers로 바뀐 것 뿐임)
+	//depth2에서는 printWindow역할을 View가 하고 있기 때문
             TetrisState state=board->accept(Key);
             notifyObservers(&(board->oScreen));
             if(state!=NewBlock) return state;
@@ -252,7 +261,7 @@ class Model:public Observer,public Publisher{ //Model 클래스
             if(state!=Finished) return state;
             return state;
         }
-        void run(){
+        void run(){ //스레드 돌릴 함수
             while(!isGameDone){
                 Tetris *board=new Tetris(20,15);
 
@@ -280,13 +289,14 @@ class Model:public Observer,public Publisher{ //Model 클래스
                     }
                 }
                 string str=name+" is terminated...";
-                printMsg(str);
-                sleep(1);
-                notifyObservers(nullptr);
+                printMsg(str); //printMsg통해 종료 메시지 출력
+                sleep(1); //1초 쉬기
+                notifyObservers(nullptr); //객체의 observer(View)들에게 빈 포인터값 전달
             }
         }
-        void callme(std::vector<std::thread> *threads){
+        void callme(std::vector<std::thread> *threads){ //스레드 시작해주는 함수
             threads->push_back(std::thread(&Model::run,this));
+	    //객체의 run함수를 이용해서 스레드 시작하고 threads에 해당 스레드 
         }
 };
 class KeyController:public Publisher{ //KeyController 클래스 (depth1과 동일)
@@ -356,7 +366,7 @@ int main(){
     setlocale(LC_ALL,"");
     initscr();
     clear();
-    echo();
+    //echo();
     start_color();
     use_default_colors(); 
     Tetris::init(setOfBlockArrays, MAX_BLK_TYPES, MAX_BLK_DEGREES);
