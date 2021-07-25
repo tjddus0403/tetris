@@ -165,7 +165,7 @@ class View:public Observer{ //View 클래스
         std::condition_variable cv; 
 	//Screen포인터 읽어오는 과정에서 실행 순서를 지정해줄 조건변수 생성
         std::mutex m; //조건변수 보호할 뮤텍스 생성
-        Tetris* board;
+        Tetris* board; //객체의 publisher가 사용하고 있는 테트리스 객체(나중에 delete 위함)
         View(string Name){ //View 객체 생성자
             name=Name; //인자로 받은 문자열을 이름으로 설정
         }
@@ -196,7 +196,7 @@ class View:public Observer{ //View 클래스
                 if(screen==nullptr) break; //읽어온 포인터 값이 nullptr이면 반복문 탈출 후 종료
                 printWindow(win,*screen); //아니면 printWindow로 해당 screen
             }
-            delete board;
+            delete board; //객체의 publisher의 테트리스 객체 delete
             string str=name+" is terminated...";
             printMsg(str); //printMsg통해 종료 메시지 출력
             sleep(1); //1초 쉬기
@@ -268,9 +268,10 @@ class Model:public Observer,public Publisher{ //Model 클래스
         void run(){ //스레드 돌릴 함수
 	//depth1의 ModelView::run과 동일 
 	//(printWindow->notifyObservers로 바뀐 것 뿐임)
+	//+객체의 observer들에게 테트리스 객체 보내주는 것 뿐
             Tetris *board=new Tetris(20,15);
-            for(int i=0;i<observers.size();i++){
-                observers[i]->board=board;
+            for(int i=0;i<observers.size();i++){ //객체의 observer들의 테트리스 객체를
+                observers[i]->board=board; //객체의 테트리스 객체로 
             }
             TetrisState state;
             char key;
