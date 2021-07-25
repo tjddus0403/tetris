@@ -190,10 +190,10 @@ class View:public Observer{ //View 클래스
             win=window; //전달받은 창을 객체의 창으로 설정
         } 
         void run(){ //스레드 돌릴 함수
-            while(!isGameDone){
-                Matrix* screen=read();
-                if(screen==nullptr) break;
-                printWindow(win,*screen);
+            while(!isGameDone){ //isGameDone이 false면
+                Matrix* screen=read(); //read함수를 통해 screen의 포인터 값 받아옴
+                if(screen==nullptr) break; //읽어온 포인터 값이 nullptr이면 반복문 탈출 후 종료
+                printWindow(win,*screen); //아니면 printWindow로 해당 screen
             }
             string str=name+" is terminated...";
             printMsg(str); //printMsg통해 종료 메시지 출력
@@ -247,8 +247,10 @@ class Model:public Observer,public Publisher{ //Model 클래스
             return key; //key값 반환
         }
         TetrisState processKey(Tetris* board, char Key){
-	//depth1의 processKey와 동일(printWindow->notifyObservers로 바뀐 것 뿐임)
+	//depth1의 processKey와 동일
+	//(printWindow->notifyObservers로 바뀌고 더이상 창을 인자로 받지 않을 뿐임)
 	//depth2에서는 printWindow역할을 View가 하고 있기 때문
+	//따라서 창도 View에서 지정되어 있음
             TetrisState state=board->accept(Key);
             notifyObservers(&(board->oScreen));
             if(state!=NewBlock) return state;
@@ -262,6 +264,8 @@ class Model:public Observer,public Publisher{ //Model 클래스
             return state;
         }
         void run(){ //스레드 돌릴 함수
+	//depth1의 ModelView::run과 동일 
+	//(printWindow->notifyObservers로 바뀐 것 뿐임)
             while(!isGameDone){
                 Tetris *board=new Tetris(20,15);
 
