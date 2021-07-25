@@ -135,28 +135,28 @@ void printMsg(string msg){
   mu.unlock();
 }
 
-class Observer{
+class Observer{ //Observer 클래스 (depth1과 동일)
     public:
-        virtual void update(char key){
+        virtual void update(char key){ //Controllers(pub)-Model(obs) 관계에서 사용하는 update
             printMsg("Observer's update(key)");
         }
-        virtual void update(Matrix* screen){
+        virtual void update(Matrix* screen){ //Model(pub)-View(obs) 관계에서 사용하는 update
             printMsg("Observer's update(screen)");
         }
 };
-class Publisher{
+class Publisher{ //Publisher 클래스 (depth1과 동일)
     public:
         virtual void addObserver(Observer* observer){
             printMsg("Publisher's addObserver");
         }
-        virtual void notifyObservers(char key){
+        virtual void notifyObservers(char key){ //Controllers(pub)-Model(obs) 관계에서 사용하는 notifyObservers
             printMsg("Publisher's notifyObservers(key)");
         }
-        virtual void notifyObservers(Matrix* screen){
+        virtual void notifyObservers(Matrix* screen){ //Model(pub)-View(obs) 관계에서 사용하는 notifyObservers
             printMsg("Publisher's notifyObservers(screen)");
         }
 };
-class View:public Observer{
+class View:public Observer{ //View 클래스
     public:
         string name;
         std::queue<Matrix*> Screens;
@@ -200,7 +200,7 @@ class View:public Observer{
             threads->push_back(std::thread(&View::run,this));
         }
 };
-class Model:public Observer,public Publisher{
+class Model:public Observer,public Publisher{ //Model 클래스
     public:
         string name;
         std::vector<View*> observers;
@@ -289,7 +289,7 @@ class Model:public Observer,public Publisher{
             threads->push_back(std::thread(&Model::run,this));
         }
 };
-class KeyController:public Publisher{
+class KeyController:public Publisher{ //KeyController 클래스 (depth1과 동일)
     public:
         string name;
         std::vector<Model*> observers;
@@ -323,7 +323,7 @@ class KeyController:public Publisher{
             threads->push_back(std::thread(&KeyController::run,this));
         }
 };
-class TimeController:public Publisher{
+class TimeController:public Publisher{ //TimeController 클래스 (depth1과 동일)
     public:
         string name;
         std::vector<Model*> observers;
