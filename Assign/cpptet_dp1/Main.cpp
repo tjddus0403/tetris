@@ -111,7 +111,7 @@ std::mutex mu; //창 그리는데 사용할 뮤텍스 mu
 void printMsg(string msg){ //전달받은 문자열을 win0에 출력해주는 함수
   const char* c=msg.c_str(); //wprintw함수는 인자로 문자열을 받을 수 없고 char배열형태로 주어야 함
   WINDOW *win0;
-  win0=newwin(3, 70, 21, 0); //가로 70, 세로 3 크기의 win0을 (21,0)좌표에 생성 
+  win0=newwin(3, 70, 21, 0); //가로 70, 세로 3 크기의 win0을 (0,21)좌표에 생성 
   wclear(win0); //win0 창 지우기
   wprintw(win0,c); //win0에 문자열 출력(사실상 char*형태로 바꾼 것을 출력)
   mu.lock(); //락 걸기
@@ -346,7 +346,7 @@ int main() {
   use_default_colors(); //기본 색상 사용할 수 있게 함
   WINDOW *win1,*win2; //테트리스가 진행될 창 win1, win2 생성
   win1=newwin(20, 30, 0, 0); //win1은 20*30크기로 (0,0)좌표에 생성
-  win2=newwin(20, 30, 0, 60); //win2는 20*30크기로 (0,60)좌표에 생성
+  win2=newwin(20, 30, 0, 60); //win2는 20*30크기로 (60,0)좌표에 생성
   Tetris::init(setOfBlockArrays, MAX_BLK_TYPES, MAX_BLK_DEGREES); //테트리스 초기화 (블록 설정)
   //스레드 안에서 실행하면 setOfBlockArrays(전역변수)에 동시접근 가능해서 segmentaion fault가 뜨는 것 같습니다. 
   map<char,char> keypad1={{'q','q'},{'w','w'},{'a','a'},{'s','y'},{'d','d'},{' ',' '},{'y','y'}};
