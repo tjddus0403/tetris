@@ -164,8 +164,7 @@ class View:public Observer{ //View 클래스
         string name; //객체 이름
         std::queue<Matrix*> Screens; //Screen 포인터를 저장할 큐 Screens 생성
         WINDOW* win; //객체가 사용할 창 지정하기 위한 win포인터 생성
-        std::condition_variable cv; 
-	//Screen포인터 읽어오는 과정에서 실행 순서를 지정해줄 조건변수 생성
+        std::condition_variable cv; //Screen포인터 읽어오는 과정에서 실행 순서를 지정해줄 조건변수 생성
         std::mutex m; //조건변수 보호할 뮤텍스 생성
         Tetris* board; //객체의 publisher가 사용하고 있는 테트리스 객체(나중에 delete 위함)
         View(string Name){ //View 객체 생성자
