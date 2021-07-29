@@ -203,10 +203,6 @@ class View:public Observer{ //View 클래스
             printMsg(str); //printMsg통해 종료 메시지 출력
             sleep(1); //1초 쉬기
         }
-        std::thread callme(){ //스레드 시작해주는 함수
-            return std::thread(&View::run,this);
-	    //객체의 run함수를 이용해서 스레드 시작하고 해당 스레드 반환
-        }
 };
 class Model:public Observer,public Publisher{ //Model 클래스
     //Publisher클래스와 Observer클래스를 상속하며 
@@ -304,11 +300,6 @@ class Model:public Observer,public Publisher{ //Model 클래스
             sleep(1); //1초 쉬기
             notifyObservers(nullptr); //객체의 observer(View)들에게 빈 포인터값 전달
         }
-        
-        std::thread callme(){ //스레드 시작해주는 함수
-            return std::thread(&Model::run,this);
-	    //객체의 run함수를 이용해서 스레드 시작하고 해당 스레드 반환
-        }
 };
 class KeyController:public Publisher{ //KeyController 클래스 (depth1과 동일)
     //Publisher 클래스를 상속하며 publisher 역할을 함
@@ -346,10 +337,6 @@ class KeyController:public Publisher{ //KeyController 클래스 (depth1과 동�
             sleep(1); //1초 쉬기
             notifyObservers(0); //객체의 observer들에게 빈 key값 전달
         }
-        std::thread callme(){ //스레드 시작해주는 함수
-            return std::thread(&KeyController::run,this);
-	    //객체의 run함수를 이용해서 스레드 시작하고 해당 스레드 반환
-        }
 };
 class TimeController:public Publisher{ //TimeController 클래스 (depth1과 동일)
     //Publisehr 클래스를 상속하며 publisher 역할을 함
@@ -378,10 +365,6 @@ class TimeController:public Publisher{ //TimeController 클래스 (depth1과 동
             printMsg(str); //printMsg통해 종료 메시지 출력
             sleep(1); //1초 쉬기
             notifyObservers(0); //객체의 observer들에게 빈 key값 전달
-        }
-        std::thread callme(){ //스레드 시작해주는 함수
-            return std::thread(&TimeController::run,this);
-	    //객체의 run함수를 이용해서 스레드 시작하고 해당 스레드 반환
         }
 };
 int main(){
@@ -423,13 +406,13 @@ int main(){
     th_cont2.addObserver(&th_model2); //timecontrol객체의 observer로 model2등록
 	
     std::vector<std::thread> threads; //스레드들을 담을 벡터 threads 생성
-    //각 객체들의 callme함수 호출하여 스레드 반환 받고 threads에 각 스레드 추가하기
-    threads.push_back(th_view1.callme()); 
-    threads.push_back(th_view2.callme());
-    threads.push_back(th_model1.callme());
-    threads.push_back(th_model2.callme());
-    threads.push_back(th_cont1.callme());
-    threads.push_back(th_cont2.callme());
+    //threads에 각 스레드 추가하기
+    threads.push_back(std::thread(&View::run, &th_view1)); 
+    threads.push_back(std::thread(&View::run, &th_view2));
+    threads.push_back(std::thread(&Model::run, &th_model1));
+    threads.push_back(std::thread(&Model::run, &th_model2));
+    threads.push_back(std::thread(&KeyController::run, &th_cont1));
+    threads.push_back(std::thread(&TimeController::run, &th_cont2));
 
     for(int i=0;i<threads.size();i++){ //반복문 통해 각 스레드 종료시키기
         threads[i].join();
