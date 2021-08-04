@@ -162,7 +162,8 @@ TetrisState Tetris::accept(Obj obj){
             left-=1; //왼쪽으로 한칸
         else if(obj.key=='y') //y였던 경우
         {
-            top-=1; //위로 한칸
+            if(top!=0)
+                top-=1; //위로 한칸
             state=NewBlockWODel; //상태를 NewBlockWODel로 설정 (밑이 닿아서 위로 갔다는 건 현재 currBlk이 이미 설치되었음을 의미)
         }
         else if(obj.key=='w') //w였던 경우
@@ -172,7 +173,8 @@ TetrisState Tetris::accept(Obj obj){
         }
         else if(obj.key==' ') //' '였던 경우
         {
-            top-=1; //아까 한칸 오버해서 내려온거 여기서 다시 올려주면서 해결
+            if(top!=0)
+                top-=1; //아까 한칸 오버해서 내려온거 여기서 다시 올려주면서 해결
             state=NewBlockWODel; //상태를 NewBlockWODel로 설정 (사실 위에서 이미 설정하고 내려온거라 여기서 없어도 될 듯 함)
         }
         tempBlk=iScreen.clip(top,left,top+currBlk.get_dy(),left+currBlk.get_dx()); //이렇게 수정된 위치로 현재 iScreen에서 currBlk이 들어갈 자리 잘라서 tempBlk에 저장
