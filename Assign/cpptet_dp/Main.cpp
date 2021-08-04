@@ -213,112 +213,113 @@ class View:public OutScreenObserver{ //View 클래스
 };
 class Model:public KeyObserver,public OutScreenPublisher,public delRectObserver,public delRectPublisher{ //Model 클래스
     public:
-        string name;
-        std::vector<View*> observers;
-        std::vector<Model*> models;
-        std::queue<Obj> objs; 
-        std::map<char,char> Keypad;
-        std::condition_variable cv; 
-        std::mutex m; 
+        string name; //객체 이름
+        std::vector<View*> observers; //객체의 OutScreenObserver를 저장할 벡터 observers
+        std::vector<Model*> models; //객체의 delRectObserver를 저장할 벡터 models
+        std::queue<Obj> objs; //테트리스 객체에 전달할 값(키값 or delRect) 저장하는 큐 objs
+        std::map<char,char> Keypad; //객체가 사용할 키패드
+        std::condition_variable cv; //조건변수
+        std::mutex m; //뮤텍스
         
-        Model(string Name){
+        Model(string Name){ //Model 객체 생성자
             name=Name; 
         }
-        virtual void addObserver(View* view){
+        virtual void addObserver(View* view){ //객체의 OutScreenObserver를 추가하는 함수
             observers.push_back(view); 
         }
-        virtual void notifyObservers(Matrix* screen){ 
-            for(int i=0;i<observers.size();i++){
-                observers[i]->update(screen);
+        virtual void notifyObservers(Matrix* screen){ //객체의 OutScreenObserver들에게 출력할 screen을 알리는 notifyObservers
+            for(int i=0;i<observers.size();i++){ //각 observer들의 update함수를 호출하여 출력할 screen전달
+                observers[i]->update(screen); 
             }
         }
-        virtual void update(char key){ 
+        virtual void update(char key){ //객체의 KeyPublisher로부터 테트리스 객체에 전달할 값(키 값)을 받아오는 함수
             std::unique_lock<std::mutex> lk(m);
-            Obj obj(key);
-            objs.push(obj);
+            Obj obj(key); //전달받은 키 값을 이용하여 Obj 객체 obj 생성
+            objs.push(obj); //obj을 objs에 추가
             cv.notify_all(); 
             lk.unlock(); 
         }
-        void addKeypad(map<char,char>& keypad){ 
+        void addKeypad(map<char,char>& keypad){ //객체의 키패드를 설정하는 함수
             Keypad=keypad; 
         }
-        virtual void addObserver(Model* model){
-            models.push_back(model);
+        virtual void addObserver(Model* model){ //객체의 delRectObserver를 추가하는 함수
+            models.push_back(model); 
         }
-        virtual void update(Matrix delRect){
+        virtual void update(Matrix delRect){ //객체의 delRectPublisher로부터 테트리스 객체에 전달할 값(delRect)을 받아오는 함수
             std::unique_lock<std::mutex> lk(m);
-            Obj obj(delRect);
-            objs.push(obj);
+            Obj obj(delRect); //전달받은 delRect 이용하여 Obj 객체 obj 생성
+            objs.push(obj); //obj을 objs에 추가
             cv.notify_all();
             lk.unlock();
         }
-        virtual void notifyObservers(Matrix delRect){
-            for(int i=0;i<models.size();i++){
+        virtual void notifyObservers(Matrix delRect){ //객체의 delRectObserver들에게 테트리스 객체에 전달할 값(delRect)을 알리는 notifyObservers
+            for(int i=0;i<models.size();i++){ //각 observer들의 update함수를 호출하여 테트리스 객체에 전달할 값 delRect전달 
                 models[i]->update(delRect);
             }
         }
-        Obj read(){
+        Obj read(){ //테트리스 객체에 전달할 값(Obj객체) 반환해주는 함수
             std::unique_lock<std::mutex> lk(m);
             while(objs.size()<1){ 
                 cv.wait(lk);
             }
-            Obj obj=objs.front(); 
-            objs.pop();
+            Obj obj=objs.front(); //objs에서 맨 앞에 있는 obj 뽑아서
+            objs.pop(); //(가져온 후 삭제)
             lk.unlock();
-            return obj;
+            return obj; //해당 obj 반환
         }
-        Matrix getDelRect(Tetris* board){
-            int size=board->delLines.size();
-            Matrix delRect(size,15);
+        Matrix getDelRect(Tetris* board){ 
+	//delRectPublisher가 delRectObserver에게 delRect를 전달할 때, 현재 있는 모든 줄을 합쳐서 하나의 블럭으로 전달해주기 위한 함수
+            int size=board->delLines.size(); //테트리스 객체의 delLines 길이를 size로 저장
+            Matrix delRect(size,15); //y축 길이가 size이고 x축은 full size인 delRect 생성 (이 delRect는 값이 모두 0으로 되어있는 기본 Matrix형태)
             for(int i=0;i<size;i++){
-                delRect.paste(&((board->delLines).front()),i,0);
-                (board->delLines).pop();
-            }
-            //printMsg(name+" "+delRect.print());
-            return delRect;
+                delRect.paste(&((board->delLines).front()),i,0); //delLines에서 하나씩 가져와서 delRect에 차례로 붙이기
+                (board->delLines).pop(); //(붙인 후 삭제)
+	    }
+            return delRect; //완성된 delRect 반환
         }
-        TetrisState processKey(Tetris* board, Obj obj){
-            TetrisState state=board->accept(obj);
-            notifyObservers(&(board->oScreen));
-            if((state!=NewBlockWDel)&&(state!=NewBlockWODel)) return state;
-            
-            srand((unsigned int)time(NULL));
+        TetrisState processKey(Tetris* board, Obj obj){ //테트리스 객체에 obj가 적용되는 과정을 담은 함수 
+            TetrisState state=board->accept(obj); //obj를 Tetris::accept에 넘겨 상태 확인
+            notifyObservers(&(board->oScreen)); //이에 따른 테트리스 상태를 출력하기 위해 OutScreenObserver들에게 출력할 screen 전달
+            if((state!=NewBlockWDel)&&(state!=NewBlockWODel)) return state; //만약 obj 적용 후 상태가 Finished / Running 이라면 해당 상태 반환
+            //아니면 NewBlockWDel / NewBlockWODel 상태이므로 일단 새 블록 생성
+            srand((unsigned int)time(NULL)); 
             char Key = (char)('0' + rand() % MAX_BLK_TYPES);
-            obj.key=Key;
-            state=board->accept(obj);
-            if(state==NewBlockWDel){
-                notifyObservers(getDelRect(board));
+            obj.key=Key; //현재 obj의 키 값을 새 블록의 키 값으로 바꾸고
+            state=board->accept(obj); //다시 한 번 obj를 Tetris::accept에 넘겨 상태 확인
+            if(state==NewBlockWDel){ //만약 상태가 NewBlockWDel이면
+                notifyObservers(getDelRect(board)); //getDelRect로 테트리스 객체의 delRect를 얻어와서 delRectObserver에 전달
             }
-            notifyObservers(&(board->oScreen));
+            notifyObservers(&(board->oScreen)); //마지막으로 다시 한 번 현재 화면 출력하기 위해 OutScreenObserver들에게 출력할 screen 전달
 
-            return state;
+            return state; //현재 상태 반환
         }
-        void run(){
-            Tetris *board=new Tetris(20,15);
-            for(int i=0;i<observers.size();i++){
+        void run(){ //스레드 돌릴 함수
+            Tetris *board=new Tetris(20,15); //테트리스 객체 생성(board)
+            for(int i=0;i<observers.size();i++){ 
                 observers[i]->board=board; 
             }
-            TetrisState state;
-            Obj obj;
+            TetrisState state; //테트리스 상태 확인 (Running, NewBlockWDel, NewBlockWODel, Finished)
+            Obj obj; //테트리스 객체에 전달할 값을 담은 Obj 객체 obj
 
-            srand((unsigned int)time(NULL));
+            srand((unsigned int)time(NULL)); //처음엔 랜덤 키로 새 블록 생성해주고 시작
             char Key = (char)('0' + rand() % MAX_BLK_TYPES); 
             obj.key=Key;
             state=board->accept(obj); 
-            notifyObservers(&(board->oScreen)); 
-            while(!isGameDone){ 
-                obj=read();
-                if(!obj.key) break;
-                if(Keypad.find(obj.key)==Keypad.end()) continue;
-                obj.key=Keypad[obj.key];
-                if(obj.key=='q') state=Finished;
-                else state=processKey(board, obj); 
-                if(state==Finished){
-                    isGameDone=true; 
+            notifyObservers(&(board->oScreen));
+		
+            while(!isGameDone){ //반복문을 돌며 테트리스 진행 (크게 전달할 값 저장-> 테트리스에 적용-> 상태 확인 순서로 진행됨)
+                obj=read(); //테트리스 객체에 전달할 값 obj 받아오기
+                if(!obj.key) break; //obj의 키 값이 없으면 반복문 탈출 후 게임 종료
+                if(Keypad.find(obj.key)==Keypad.end()) continue; //객체의 키패드에 obj의 키 값이 없으면 다음 턴으로 넘기기
+                obj.key=Keypad[obj.key]; //있으면 해당하는 값으로 obj의 키 값 재설정
+                if(obj.key=='q') state=Finished; //obj의 키 값이 q이면 상태를 Finished로 설정
+                else state=processKey(board, obj); //아니면 processKey통해 obj를 테트리스에 적용
+                if(state==Finished){ //만약 상태가 Finished라면
+                    isGameDone=true; //isGameDone을 true로 설정
                     string str=name+" is dead!!"; 
                     printMsg(str); 
                     sleep(2);
-                    break; 
+                    break; //반복문 탈출 후 게임 종료
                 }
             }
             string str=name+" is terminated...";
