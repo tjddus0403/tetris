@@ -6,21 +6,21 @@
 #include <sys/socket.h>
 using namespace std;
 
-void usage(char *argv){
+void usage(char *argv){ //인자가 2개(프로그램 실행과 포트 넘버)가 아닐 시, 아래의 내용을 출력할 함수
     cout << "Usage : " << argv << " [port]" << endl;
     cout << "Example) " << argv << " 1234" << endl;
 }
 
 int main(int argc, char *argv[]){
     if(argc != 2){ // 인자가 2개가 아니면 usage 출력
-        usage(argv[0]);
+        usage(argv[0]); 
         return -1;
     }
 
     char buff[256]; // 읽기, 쓰기용 버퍼 선언
 
-    struct sockaddr_in addr_server = {}; // 주소체계 구조체 선언
-    struct sockaddr_in addr_client = {};
+    struct sockaddr_in addr_server = {}; // server용 주소체계 구조체 선언
+    struct sockaddr_in addr_client = {}; // client용 주소체계 구조체 선언
     socklen_t addr_client_len = sizeof(addr_client_len); // 길이 계산
 
     memset(&addr_server, 0, sizeof(addr_server)); // 초기화
