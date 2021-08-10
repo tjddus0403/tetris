@@ -35,11 +35,15 @@ int main(int argc, char *argv[]){
         exit(1); //프로그램 종료
     }
 
-    if(connect(sock_client, (struct sockaddr*) &addr_server, sizeof(addr_server)) == -1){ // 연결 요청
-        //connect함수 통해 클라이언트 소켓을 addr_server가 가리키는 주소정
-        cout << "connect error" << endl;
-        close(sock_client);
-        exit(1);
+    if(connect(sock_client, (struct sockaddr*) &addr_server, sizeof(addr_server)) == -1){ 
+        //connect함수 통해 클라이언트 소켓을 addr_server가 가리키는 서버에 연결 요청 (실패 시, -1 반환)
+        //네트워크 통해 데이터를 주고 받기 위해 소켓이 필요 + 소켓은 IP주소와 포트 넘버가 반드시 할당되어야 함
+        //클라이언트의 주소 할당은 connect함수 호출 시, 커널이 자동으로 해주기 때문에 bind가 필요 없음
+        //값이 리턴되는 시점은 연결 요청이 수락되거나, 오류가 발생해 요청이 중단되는 경우임
+        //연결 요청이 이루어지지 않고 서버의 대기 큐에서 기다리고 있는 상태이면 connect함수는 리턴되지 않고 블로킹 상태에 있게됨
+        cout << "connect error" << endl; //연결 요청 실패 시, 에러 메시지 출력 후
+        close(sock_client); //소켓 닫기
+        exit(1); //프로그램 종료
     }
 
     while(1){ // 연결 수락시 반복문
@@ -47,20 +51,22 @@ int main(int argc, char *argv[]){
         cin >> w_buff; // 쓰기 버퍼에 문자열 입력
         if(strlen(w_buff)>255) break; // 버퍼 오버플로그 방지
         int write_chk = write(sock_client, w_buff, strlen(w_buff)); // 작성 길이만큼 write(전송)
-        if(write_chk == -1){
-            cout << "write error" << endl;
-            break;
+        //write함수 통해 쓰기 버퍼에 있는 데이터를 클라이언트에 전송 
+        if(write_chk == -1){ //write 실패 시,
+            cout << "write error" << endl; //에러 메시지 출력 후 
+            break; //반복문 탈출
         }
         int read_chk = read(sock_client, r_buff, sizeof(r_buff)-1); // 읽기 버퍼사이즈-1 만큼 read(읽기)
-        if(read_chk == -1){
-            cout << "read error" << endl;
-            break;
+        //read함수 통해 클라이언트로부터 데이터를 읽기 버퍼크기-1 크기 만큼 읽어와 읽기 버퍼에 저장
+        if(read_chk == -1){ //read 실패 시,
+            cout << "read error" << endl; //에러 메시지 출력 후
+            break; //반복문 탈출
         }else{
-            r_buff[strlen(r_buff)] = '\n';
-            cout << r_buff; // 버퍼 출력
+            r_buff[strlen(r_buff)] = '\n'; //성공 시, 
+            cout << r_buff; // 읽기 버퍼 출력
         }
     }
-    close(sock_client); // 연결 종료
+    close(sock_client); // 소켓 닫기(연결 종료)
     return 0;
 }
 
