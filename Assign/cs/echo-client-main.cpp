@@ -51,13 +51,13 @@ int main(int argc, char *argv[]){
         cin >> w_buff; // 쓰기 버퍼에 문자열 입력
         if(strlen(w_buff)>255) break; // 버퍼 오버플로그 방지
         int write_chk = write(sock_client, w_buff, strlen(w_buff)); // 작성 길이만큼 write(전송)
-        //write함수 통해 쓰기 버퍼에 있는 데이터를 클라이언트에 전송 
+        //write함수 통해 쓰기 버퍼에 있는 데이터를 클라이언트 소켓에 전송 
         if(write_chk == -1){ //write 실패 시,
             cout << "write error" << endl; //에러 메시지 출력 후 
             break; //반복문 탈출
         }
         int read_chk = read(sock_client, r_buff, sizeof(r_buff)-1); // 읽기 버퍼사이즈-1 만큼 read(읽기)
-        //read함수 통해 클라이언트로부터 데이터를 읽기 버퍼크기-1 크기 만큼 읽어와 읽기 버퍼에 저장
+        //read함수 통해 클라이언트 소켓으로부터 데이터를 읽기 버퍼크기-1 크기 만큼 읽어와 읽기 버퍼에 저장
         if(read_chk == -1){ //read 실패 시,
             cout << "read error" << endl; //에러 메시지 출력 후
             break; //반복문 탈출
