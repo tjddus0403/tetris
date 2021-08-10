@@ -39,6 +39,7 @@ int main(int argc, char *argv[]){
     //프로토콜 : 0 (기본 프로토콜)
     //(AF_INET)-(SOCK_STREAM) = TCP 소켓
     //따라서 1,2번째 인자로 인해 프로토콜이 정해질 수 있기 때문에 3번재 인자값에 0을 입력해도 소캣을 생성됨 (3번째 : 프로토콜을 조금더 구체화)
+    ////서버 소켓 디스크립터 sock_server (소켓 번호라고 함)
     if(sock_server == -1){ //소켓 생성 실패 시, 
         cout << "socket error" << endl; //에러 메시지 출력 후
         close(sock_server); //소켓 닫기
@@ -64,6 +65,7 @@ int main(int argc, char *argv[]){
 
     int sock_client = accept(sock_server, (sockaddr*) &addr_client, &addr_client_len); 
     //accept함수 통해 연결 요청 대기 큐에 있는 클라이언트의 데이터 입,출력을 위해 사용될 소켓을 생성하고 해당 소켓의 파일 디스크립터 반환 받음 (실패 시, -1 반환)
+    //클라이언트 소켓 디스크립터 sock_client (소켓 번호라고 함)
     if(sock_client == -1){ //accept 실패 시,
         cout << "accept error" << endl; //에러 메시지 출력 후
         close(sock_server); //소켓 닫기
@@ -73,7 +75,7 @@ int main(int argc, char *argv[]){
     while(1){ //반복문 통해 클라이언트와 계속하여 데이터 주고 받음
         memset(buff, 0, 256); // 버퍼 초기화
         int read_chk = read(sock_client, buff, sizeof(buff)-1);
-        //read함수 통해 클라이언트로부터 데이터를 버퍼크기-1 크기 만큼 읽어와 버퍼에 읽어온 데이터 저장 (실패 시, -1 반환 / 성공 시, 읽어온 데이터 크기 반환)
+        //read함수 통해 클라이언트 소켓으로부터 데이터를 버퍼크기-1 크기 만큼 읽어와 버퍼에 읽어온 데이터 저장 (실패 시, -1 반환 / 성공 시, 읽어온 데이터 크기 반환)
         if(read_chk == -1){ //read 실패 시,
             cout << "read error" << endl; //에러 메시지 출력 후 
             break; //반복문 탈출
@@ -81,7 +83,7 @@ int main(int argc, char *argv[]){
         buff[strlen(buff)] = '\n';
         cout << buff; // 버퍼 출력 (클라이언트로부터 읽어온 데이터 출력)
         int write_chk = write(sock_client, buff, strlen(buff)); // 버퍼 사이즈만큼 write(전송)
-        //write함수 통해 버퍼에 있는 데이터를 클라이언트에 전송 (실패 시, -1 반환 / 성공 시, 전송한 데이터 크기 반환)
+        //write함수 통해 버퍼에 있는 데이터를 클라이언트 소켓에 전송 (실패 시, -1 반환 / 성공 시, 전송한 데이터 크기 반환)
         if(write_chk == -1){ //write 실패 시,
             cout << "write error" << endl; //에러 메시지 출력 후
             break; //반복문 탈출
