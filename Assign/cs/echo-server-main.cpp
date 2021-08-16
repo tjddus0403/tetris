@@ -23,7 +23,7 @@ int main(int argc, char *argv[]){
     struct sockaddr_in addr_server = {}; // 서버용 주소체계 구조체 선언
     struct sockaddr_in addr_client = {}; // 클라이언트용 주소체계 구조체 선언
     socklen_t addr_client_len = sizeof(addr_client_len); // 길이 계산
-
+    int option=1;
     memset(&addr_server, 0, sizeof(addr_server)); // addr_server 구조체 초기화
     addr_server.sin_family = AF_INET; // IPv4 인터넷 프로토콜
     addr_server.sin_port = htons(atoi(argv[1])); // 첫번째 인자 PORT 지정 (서버가 사용할 포트 번호)
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]){
         close(sock_server); //소켓 닫기
         exit(1); //프로그램 종료
     }
-
+    setsockopt(sock_server,SOL_SOCKET,SO_REUSEADDR,&option,sizeof(option));
     if(bind(sock_server, (sockaddr*) &addr_server, sizeof(addr_server)) == -1){
         //bind함수 통해 socket_server가 가리키는 서버 소켓에 addr_server가 가리키는 주소 정보가 할당됨 (실패 시, -1 반환)
         //따라서 해당 addr_server는 서버 소켓을 통해 다른 클라이언트로부터 연결을 받아들일 수 있음
