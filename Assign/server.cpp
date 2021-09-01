@@ -51,7 +51,6 @@ int main(int argc, char *argv[]){
     memset(&addr_server, 0, sizeof(addr_server)); // addr_server 구조체 초기화
     addr_server.sin_family = AF_INET; // IPv4 인터넷 프로토콜
     addr_server.sin_port = htons(atoi(argv[1])); // 첫번째 인자 PORT 지정 (서버가 사용할 포트 번호)
-    //unsigned long nAddr = inet_addr("192.168.59.111");
     addr_server.sin_addr.s_addr = htonl(INADDR_ANY); 
     //htonl : 서버의 주소와 포트 번호는 IP헤더에 저장되어 전송되지만 이를 중계하는 라우터들은 네트워크 바이트 방식으로 처리
     //INADDR_ANY : 서버에 연결된 네트워크 인터페이스를 목적지로 하여 들어오는 모든 자료를 수신 가능
@@ -63,8 +62,6 @@ int main(int argc, char *argv[]){
         close(sock_server); //소켓 닫기
         exit(1); //프로그램 종료
     }
-    //setsockopt(sock_server,SOL_SOCKET,SO_REUSEADDR,&option,sizeof(option));
-    //setsockopt(sock_server,SOL_SOCKET,SO_REUSEPORT,&option,sizeof(option));
 
     if(listen(sock_server, 3) == -1){ 
         //listen함수 통해 서버 소켓과 연결 요청 대기 큐가 완전히 준비되어 클라이언트의 연결 요청을 받을 수 있는 상태로 만들기 (실패 시, -1 반환)
@@ -87,15 +84,14 @@ int main(int argc, char *argv[]){
         }//반복문 통해 클라이언트와 계속하여 데이터 주고 받음
         while(1){
             memset(buff, 0, 256); // 버퍼 초기화
-            int read_chk = read(sock_client, buff, sizeof(buff)-1);
+            int read_chk = read(sock_client, buff, 1);
             //read함수 통해 클라이언트 소켓으로부터 데이터를 버퍼크기-1 크기 만큼 읽어와 버퍼에 읽어온 데이터 저장 (실패 시, -1 반환 / 성공 시, 읽어온 데이터 크기 반환)
             if(read_chk == -1){ //read 실패 시,
                 cout << "read error" << endl; //에러 메시지 출력 후 
                 break; //반복문 탈출
             }
-            buff[strlen(buff)] = '\n';
-            cout << buff; // 버퍼 출력 (클라이언트로부터 읽어온 데이터 출력)
-            int write_chk = write(sock_client, buff, strlen(buff)); // 버퍼 사이즈만큼 write(전송)
+            cout<<buff[0]<<endl;
+            int write_chk = write(sock_client, buff, 1); // 버퍼 사이즈만큼 write(전송)
             //write함수 통해 버퍼에 있는 데이터를 클라이언트 소켓에 전송 (실패 시, -1 반환 / 성공 시, 전송한 데이터 크기 반환)
             if(write_chk == -1){ //write 실패 시,
                 cout << "write error" << endl; //에러 메시지 출력 후
