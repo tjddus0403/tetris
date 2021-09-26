@@ -41,10 +41,10 @@ class Model:public KeyObserver,public OutScreenPublisher,public delRectObserver,
         std::condition_variable cv;
         std::mutex m; 
         bool isMine;
-        bool isServer;
-        int sock_client1;
-        int sock_client2;
-        int sock_server;
+        bool isServer; //해당 객체가 서버의 객체인지 클라이언트의 객체인지 구분하기 위한 변수
+        int sock_client1; //(서버일 경우 필요) 클라이언트1의 소켓디스크립터
+        int sock_client2; //(서버일 경우 필요) 클라이언트2의 소켓디스크립터
+        int sock_server; //(클라이언트일 경우 필요) 서버의 소켓디스크립터
         
         Model(string Name, bool ismine, bool isServer);
         void addKeypad(map<char,char>& keypad);
@@ -63,8 +63,8 @@ class Model:public KeyObserver,public OutScreenPublisher,public delRectObserver,
         Obj Read();
         TetrisState processKey(CTetris* board, Obj obj);
         void printMsg(string msg);
-        void setClient(int server, int client1, int client2);
-        void sendQ();
-        void recvQ();
+        void setClient(int server, int client1, int client2); //각 소켓디스크립터를 설정해주는 함수
+        void sendQ(); //(서버일 경우 사용) 클라이언트들에게 승패의 결과를 전달해주는 함수
+        void recvQ(); //(클라이언트일 경우 사용) 서버로부터 승패의 결과를 전달받는 함수
         void run();
 };
