@@ -148,9 +148,9 @@ void Model::sendQ(){ //(서버일 경우 사용) 클라이언트들에게 승패
     
     char r_buff[256];
     int read_chk1=read(sock_client1,r_buff,1); //클라이언트1이 결과를 인정했는지 확인
-    if(r_buff[0]=='q') cout<<"Accept\n"; //만약 q라면 결과를 인정한 것
+    if(r_buff[0]=='O') cout<<"Accept\n"; //만약 q라면 결과를 인정한 것
     int read_chk2=read(sock_client2,r_buff,1); //클라이언트2가 결과를 인정했는지 확인
-    if(r_buff[0]=='q') cout<<"Accept\n"; //만약 q라면 결과를 인정한 것
+    if(r_buff[0]=='O') cout<<"Accept\n"; //만약 q라면 결과를 인정한 것
 }
 void Model::recvQ(){ //(클라이언트일 경우 사용) 서버로부터 승패의 결과를 전달받는 함수
     char r_buff[256]; //서버로부터 메시지를 받아올 버퍼
@@ -165,7 +165,7 @@ void Model::recvQ(){ //(클라이언트일 경우 사용) 서버로부터 승패
         printMsg("You Lose\n");
     }
     char w_buff[256]; 
-    w_buff[0]='q';
+    w_buff[0]='O';
     int write_chk=write(sock_server,w_buff,1); //서버의 결과에 동의한다는 의미로 다시 q전송
 }
 TetrisState Model::processKey(CTetris* board, Obj obj){ //테트리스 객체에 obj가 적용되는 과정을 담은 함수
