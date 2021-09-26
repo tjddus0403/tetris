@@ -1,7 +1,7 @@
 enum TetrisState {
     Running(0), NewBlock(1), Finished(2);
-    private final int value;
-    private TetrisState(int value) { this.value = value; }
+    private final int value; //final : 문자열이나 숫자들을 나타내는 기본 자료형의 값 고정시키는 역할; 이렇게 고정된 수 : 상수
+    private TetrisState(int value) { this.value = value; } //default 생성자는 private!!
     public int value() { return value; }
 }
 
@@ -10,16 +10,16 @@ public class Tetris {
     private static int nBlockTypes;		// number of block types (typically 7)
     private static int nBlockDegrees;	// number of block degrees (typically 4)
     private static Matrix[][] setOfBlockObjects;	// Matrix object arrays of all blocks
-    private static Matrix[][] createSetOfBlocks(int[][][][] setOfArrays) throws Exception {
+    private static Matrix[][] createSetOfBlocks(int[][][][] setOfArrays) throws Exception { //작성해야함 (array받아서 matrix형태로 반환)
         return null;
     }
-    private static int max(int a, int b) { return (a > b ? a : b); }
-    private static int findLargestBlockSize(int[][][][] setOfArrays) {
+    private static int max(int a, int b) { return (a > b ? a : b); } 
+    private static int findLargestBlockSize(int[][][][] setOfArrays) { //사이즈가 가장 큰 블록의 사이즈를 반환하는 함수
         int size, max_size = 0;
         for (int t = 0; t < nBlockTypes; t++) {
             for (int d = 0; d < nBlockDegrees; d++) {
-                size = setOfArrays[t][d].length;
-                max_size = max(max_size, size);
+                size = setOfArrays[t][d].length; 
+                max_size = max(max_size, size); 
             }
         }
         //System.out.println("max_size = "+max_size);
