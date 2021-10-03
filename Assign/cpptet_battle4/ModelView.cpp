@@ -180,27 +180,27 @@ void Model::run(){
         if(obj.key=='q') state=Finished;
         else state=processKey(board, obj);
         if(state==Finished){ //만약 state가 Finished라면,
-            if(isMine) {
+            if(isMine) { //model1이면, 
+                notifyObserversKey('q'); //KeyObserver에게 'q'전송 후, 반복문 탈출
+                break; 
+            }
+            if(isServer) { //서버의 모델이라면,
                 notifyObserversKey('q'); //KeyObserver에게 'q'전송
-                break;
             }
-            if(isServer) { 
-                notifyObserversKey('q');
-            }
-            else { 
+            else { //아니면, 서버의 판정 받기
                 while(true){
-                    obj=Read();
-                    if(obj.key=='L'){
+                    obj=Read(); //'q'이후에 읽어온 값이
+                    if(obj.key=='L'){ //L이면 패배 문구 출력 후, 반복문 탈출
                         printMsg("You Lose!!");
-                        break;
+                        break; 
                     }
-                    else if(obj.key=='W'){
+                    else if(obj.key=='W'){ //W이면 승리 출력 후, 반복문 탈출
                         printMsg("You Win!!");
                         break;
                     }
                 }
             }
-            isGameDone=true;
+            isGameDone=true; //isGameDone=true로 설정
         }
     }
     delete board;
