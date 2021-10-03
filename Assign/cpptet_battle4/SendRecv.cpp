@@ -29,16 +29,18 @@ void SendController::run(){
         char key=read();
         if(!key) break;
         char w_buff[256];
-        w_buff[0]=key;
-        if(key=='q'){
-            if(isServer){
-                w_buff[1]='W';
+        w_buff[0]=key; //읽어온 key값을 w_buff[0]에 저장 
+        if(key=='q'){ //만약 읽어온 key값이 'q'라면,
+            if(isServer){ //서버의 SendController 객체인 경우,
+                w_buff[1]='W'; //w_buff[1]을 'W'로 설정하여
                 int write_chk=write(sock_client1, w_buff, 2);
-                w_buff[1]='L';
+                //상대 클라이언트에게 'qW' 전송 (승리 의미)
+                w_buff[1]='L'; //w_buff[1]을 'L'로 설정하여
                 write_chk=write(sock_client2, w_buff, 2);
-            }
+                //내가 담당한 클라이언트에게 'qL' 전송 (패배 의미)
+            } //서버가 아닌 경우, write를 이용해 서버에 'q'전달
             else int write_chk=write(sock_client1,w_buff,1);
-        }
+        }//key값이 'q'가 아닌 경우, write를 이용해 서버에 key값 전달
         else int write_chk=write(sock_client1,w_buff,1);
         if(isServer){
             cout<<name<<" recv : "<<key<<endl;
@@ -76,9 +78,10 @@ void RecvController::run(){
         }
         if(!key) break;
         notifyObserversKey(key);
-        if(key=='q') {
-            notifyObserversKey(r_buff[1]);
-            break;
+        if(key=='q') { 
+            if(!isServer) notifyObserversKey(r_buff[1]); 
+            //서버로부터 받아온 Key값이 'q'라면, r_buff[1]값('L'/'W')도 객체의 KeyObserver에 전달
+            break; 
         }
     }
     sleep(1);
