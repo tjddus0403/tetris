@@ -13,8 +13,10 @@ class SendController:public KeyObserver{
         std::mutex m;
         string name;
         bool isServer;
-        int sock_client1; //(서버일 경우 필요) 클라이언트1의 소켓디스크립터
-        int sock_client2; //(서버일 경우 필요) 클라이언트2의 소켓디스크립터]
+        int sock_client1; 
+        //(서버일 경우) 내가 담당한 클라이언트의 소켓디스크립터
+        //(클라이언트일 경우) 서버의 소켓디스크립터
+        int sock_client2; //(서버일 경우 필요) 상대 클라이언트의 소켓디스크립터
         
         SendController(string Name, bool isserver);
         void updateKey(char key);
