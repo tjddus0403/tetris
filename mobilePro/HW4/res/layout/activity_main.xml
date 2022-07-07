@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffffff"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0px"
+        android:layout_weight="2"
+        android:orientation="horizontal" >
+
+        <ssu.btetris.singleuser.TetrisView
+            android:id="@+id/peerTetrisView"
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="4"
+            android:layout_margin="2dp"
+            android:background="#bbbbbb"
+            android:gravity="center" />
+
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <ssu.btetris.singleuser.BlockView
+                android:id="@+id/myBlockView"
+                android:layout_width="fill_parent"
+                android:layout_height="0px"
+                android:layout_weight="1"
+                android:layout_margin="2dp"
+                android:background="#000000"
+                android:gravity="center" />
+
+            <Button
+                android:id="@+id/startBtn"
+                android:layout_width="fill_parent"
+                android:layout_height="0px"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="N"/>
+
+            <Button
+                android:id="@+id/pauseBtn"
+                android:layout_width="fill_parent"
+                android:layout_height="0px"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="P"/>
+
+            <Button
+                android:id="@+id/settingBtn"
+                android:layout_width="fill_parent"
+                android:layout_height="0px"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="S"/>
+
+            <Button
+                android:id="@+id/modeBtn"
+                android:layout_width="fill_parent"
+                android:layout_height="0px"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="1"/>
+
+            <Button
+                android:id="@+id/reservedBtn"
+                android:layout_width="fill_parent"
+                android:layout_height="0px"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="X"/>
+
+            <ssu.btetris.singleuser.BlockView
+                android:id="@+id/peerBlockView"
+                android:layout_width="fill_parent"
+                android:layout_height="0px"
+                android:layout_weight="1"
+                android:layout_margin="2dp"
+                android:background="#bbbbbb"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+        <ssu.btetris.singleuser.TetrisView
+            android:id="@+id/myTetrisView"
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="4"
+            android:layout_margin="2dp"
+            android:background="#000000"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0px"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+            <Button
+                android:id="@+id/topLeftBtn"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text=" "/>
+            <Button
+                android:id="@+id/upArrowBtn"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="↑"/>
+            <Button
+                android:id="@+id/topRightBtn"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text=" "/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+            <Button
+                android:id="@+id/leftArrowBtn"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="←"/>
+            <Button
+                android:id="@+id/downArrowBtn"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="↓"/>
+            <Button
+                android:id="@+id/rightArrowBtn"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:text="→"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/dropBtn"
+            android:layout_width="fill_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            android:text="DROP"/>
+    </LinearLayout>
+
+</LinearLayout>
